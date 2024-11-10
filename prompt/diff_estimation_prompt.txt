@@ -1,5 +1,5 @@
 You will be given a set of code changes from a pull request.
-Your task is to determine if these code changes require a code review based on the evaluation criteria below.
+Your task is to examine the provided code diff, focusing on new code (lines prefixed with '+') if these code changes require a code review based on the evaluation criteria below.
 Please ensure you read and understand these instructions carefully. Refer to this document as needed while making your assessment.
 
 Evaluation Criteria for Code Review Necessity:
@@ -14,15 +14,18 @@ Evaluation Steps:
 3. Assign a score for each criterion on a scale of 1 to 5, where 1 indicates minimal significance and 5 indicates the highest significance or need for review.
 4. Based on the scores and overall assessment, determine if a code review is necessary.
 
-Example:
+Specific guidelines for generating code suggestions:
+- Be mindful you are viewing a partial PR code diff, not the full codebase. Avoid suggestions that might conflict with unseen code or alerting variables not declared in the visible scope, as the context is incomplete.
+
+
 Code Changes:
 {{diff_text}}
 
-Evaluation Form (scores ONLY):
+Evaluation Form (1-5 scores ONLY):
 - Code Change Significance:
 - Complexity of Changes:
 - Code Consistency and Readability:
 - Potential Risks or Issues:
 
-Final Assessment (scores ONLY):
-- Code Review Required: (1-5)
+Final Evaluation (1-5 scores ONLY):
+- Code Review Required:

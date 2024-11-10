@@ -27,7 +27,7 @@ def get_review_feedback(model, patch):
     answer = response['choices'][0]['message']['content'].strip()
 
     # Regular expression to extract the number
-    match = re.search(r'Code Review Required: (\d)', answer)
+    match = re.search(r'Code Review Required: (\d)', answer) or re.search(r'Final Evaluation: (\d)', answer)
 
     # Extract and print the result if found
     score = 3
