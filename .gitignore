@@ -163,3 +163,5 @@ cython_debug/
 
 *.key
 .DS_Store
+data/
+outout/
