@@ -12,7 +12,7 @@ def get_review_feedback(patch):
     openai.api_key = api_key
 
     diff_text = patch
-    prompt = open('data/diff_estimation_prompt.txt').read()
+    prompt = open('prompt/diff_estimation_prompt.txt').read()
     cur_prompt = prompt.replace('{{diff_text}}', diff_text)
 
     # ChatGPT API에 질문하여 코드리뷰 필요 여부 판단
@@ -30,23 +30,24 @@ def get_review_feedback(patch):
     match = re.search(r'- Code Review Required: (\d)', answer)
 
     # Extract and print the result if found
-    score = -1
+    score = 0
     if match:
         score = int(match.group(1))
         #print("Extracted score:", score)
     else:
         print("No score found")
+        print(answer)
 
     return 1 if score >=3 else 0
 
 # input.txt에서 JSON 형식의 패치를 읽어옴
-with open('prompt/diff_estimation.jsonl', 'r') as file:
+with open('data/diff_estimation.jsonl', 'r') as file:
     patches = [json.loads(line) for line in file]
 
 # 현재 시간 추가
 current_time = datetime.now().strftime('%Y%m%d_%H%M%S')
 # output.jsonl 파일에 저장
-with open('output/diff_estimation_{time}.jsonl', 'w') as output_file:
+with open(f'output/diff_estimation_{current_time}.jsonl', 'w') as output_file:
     try:
         y_true = []
         y_pred = []
