@@ -45,7 +45,7 @@ def main():
     #model = "gpt-4o-mini"
     #model = "gpt-4o"
     #model = "gpt-4-turbo"
-    input_file_name = 'diff_estimation_1_100.jsonl'
+    input_file_name = 'diff_estimation_sampling_100_weight(42).jsonl'
     
     with open(f'data/{input_file_name}', 'r') as file:
         patches = [json.loads(line) for line in file]
