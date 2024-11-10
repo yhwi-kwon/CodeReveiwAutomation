@@ -1,0 +1,28 @@
+You will be given a set of code changes from a pull request.
+Your task is to determine if these code changes require a code review based on the evaluation criteria below.
+Please ensure you read and understand these instructions carefully. Refer to this document as needed while making your assessment.
+
+Evaluation Criteria for Code Review Necessity:
+1. Code Change Significance (1-5) – Assess the impact of the code changes. Code changes that significantly affect functionality, logic, or introduce new features may need a thorough review. Changes that are minor, such as formatting, typos, or comments without code logic implications, may not require detailed review.
+2. Complexity of Changes (1-5) – Evaluate how complex the code changes are. Higher complexity often indicates a higher need for a review due to potential edge cases or intricate logic.
+3. Code Consistency and Readability (1-5) – Check if the changes align with existing code structure and maintain readability. Poorly structured or inconsistent code is a candidate for review to ensure overall codebase quality.
+4. Potential Risks or Issues (1-5) – Identify if the changes introduce any potential risks, such as security vulnerabilities, performance bottlenecks, or breaking existing functionality.
+
+Evaluation Steps:
+1. Review the code changes carefully and identify the type and scope of modifications.
+2. Assess the code changes using the criteria listed above.
+3. Assign a score for each criterion on a scale of 1 to 5, where 1 indicates minimal significance and 5 indicates the highest significance or need for review.
+4. Based on the scores and overall assessment, determine if a code review is necessary.
+
+Example:
+Code Changes:
+{{diff_text}}
+
+Evaluation Form (scores ONLY):
+- Code Change Significance:
+- Complexity of Changes:
+- Code Consistency and Readability:
+- Potential Risks or Issues:
+
+Final Assessment (scores ONLY):
+- Code Review Required: (1-5)
