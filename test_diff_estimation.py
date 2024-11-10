@@ -30,7 +30,7 @@ def get_review_feedback(patch):
     match = re.search(r'- Code Review Required: (\d)', answer)
 
     # Extract and print the result if found
-    score = 0
+    score = 1
     if match:
         score = int(match.group(1))
         #print("Extracted score:", score)
@@ -40,14 +40,14 @@ def get_review_feedback(patch):
 
     return 1 if score >=3 else 0
 
-# input.txt에서 JSON 형식의 패치를 읽어옴
-with open('data/diff_estimation.jsonl', 'r') as file:
+input_file_name = 'diff_estimation_1_100.jsonl'
+with open(f'data/{input_file_name}', 'r') as file:
     patches = [json.loads(line) for line in file]
 
 # 현재 시간 추가
 current_time = datetime.now().strftime('%Y%m%d_%H%M%S')
 # output.jsonl 파일에 저장
-with open(f'output/diff_estimation_{current_time}.jsonl', 'w') as output_file:
+with open(f'output/{input_file_name}_{current_time}.jsonl', 'w') as output_file:
     try:
         y_true = []
         y_pred = []
