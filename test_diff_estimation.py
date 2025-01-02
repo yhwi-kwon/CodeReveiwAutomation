@@ -19,7 +19,7 @@ def get_review_feedback(model, patch):
     response = openai.ChatCompletion.create(
         model=model,
         messages=[
-            {"role": "system", "content": cur_prompt}
+            {"role": "user", "content": cur_prompt}
         ]
     )
 
@@ -27,8 +27,12 @@ def get_review_feedback(model, patch):
     answer = response['choices'][0]['message']['content'].strip()
 
     # Regular expression to extract the number
-    match = re.search(r'Code Review Required: (\d)', answer) or re.search(r'Final Evaluation: (\d)', answer)
-
+    match = (
+        re.search(r'\*\*Code Review Required:\*\* (\d)', answer) or
+        re.search(r'\*\*Final Evaluation:\*\* (\d)', answer) or
+        re.search(r'Code Review Required: (\d)', answer) or
+        re.search(r'Final Evaluation: (\d)', answer)
+    )
     # Extract and print the result if found
     score = 3
     if match:
@@ -41,11 +45,12 @@ def get_review_feedback(model, patch):
 
 def main():
     # 모델 설정
-    model = "gpt-3.5-turbo"
+    #model = "gpt-3.5-turbo"
     #model = "gpt-4o-mini"
     #model = "gpt-4o"
     #model = "gpt-4-turbo"
-    input_file_name = 'diff_estimation_sampling_100_weight(42).jsonl'
+    model = "o1-mini"
+    input_file_name = 'diff_estimation_sampling_100(seed1115).jsonl'
     
     with open(f'data/{input_file_name}', 'r') as file:
         patches = [json.loads(line) for line in file]
