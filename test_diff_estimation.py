@@ -30,6 +30,8 @@ def get_review_feedback(model, patch):
     match = (
         re.search(r'\*\*Code Review Required:\*\* (\d)', answer) or
         re.search(r'\*\*Final Evaluation:\*\* (\d)', answer) or
+        re.search(r'Code Review Required: \*\*(\d)', answer) or
+        re.search(r'Final Evaluation: \*\*(\d)', answer) or
         re.search(r'Code Review Required: (\d)', answer) or
         re.search(r'Final Evaluation: (\d)', answer)
     )
