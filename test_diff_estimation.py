@@ -6,7 +6,7 @@ from datetime import datetime
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
 
 
-def get_review_feedback(model, patch):
+def get_review_feedback(model, patch, language):
     # OpenAI API 키 설정
     with open('gpt.key', 'r') as key_file:
         api_key = key_file.readline().strip()
@@ -15,6 +15,20 @@ def get_review_feedback(model, patch):
     diff_text = patch
     prompt = open('prompt/diff_estimation_prompt.txt').read()
     cur_prompt = prompt.replace('{{diff_text}}', diff_text)
+
+    language_map = {
+        'go': 'Go',
+        'java': 'Java',
+        'py': 'Python',
+        'cpp': 'C++',
+        'js': 'JavaScript',
+        'rb': 'Ruby',
+        'cs': 'C#',
+        'c': 'C',
+        'php': 'PHP'
+    }
+    language = language_map.get(language, '')
+    cur_prompt = cur_prompt.replace('{{language}}', language)
 
     # ChatGPT API에 질문하여 코드리뷰 필요 여부 판단
     response = openai.ChatCompletion.create(
@@ -34,7 +48,12 @@ def get_review_feedback(model, patch):
     # Regular expression to extract the number
     match = (
         re.search(r'Code Review Required: (\d)', answer) or
-        re.search(r'Final Evaluation: (\d)', answer)
+        re.search(r'Code Review Required (1-5): (\d)', answer) or
+        re.search(r'Final Evaluation: (\d)', answer) or
+        re.search(r'Final Evaluation (1-5): (\d)', answer) or
+        re.search(r'Final Score: (\d)', answer) or
+        re.search(r'Final Evaluation Score: (\d)', answer) or
+        re.search(r'Final Evaluation (1-5 scores ONLY): (\d)', answer)
     )
 
     # Extract and print the result if found
@@ -61,6 +80,48 @@ def get_review_feedback(model, patch):
     return (1 if score >= 3 else 0), score, significance, complexity, consistency, risks
 
 
+def evaluate_patch(model, patch):
+    y_true = int(patch['y'])
+    language = patch.get('lang', '')
+    review_needed, score, significance, complexity, consistency, risks = get_review_feedback(
+        model, patch['patch'], language)
+    y_pred = int(review_needed)
+
+    patch['y_pred'] = review_needed
+    patch['y_pred_score'] = score
+    patch['y_code_change_significance'] = significance
+    patch['y_complexity_of_changes'] = complexity
+    patch['y_code_consistency_and_readability'] = consistency
+    patch['y_potential_risks_or_issues'] = risks
+
+    return y_true, y_pred, patch
+
+
+def save_metrics(y_true_list, y_pred_list, input_file_name, model, current_time):
+    precision = precision_score(y_true_list, y_pred_list)
+    recall = recall_score(y_true_list, y_pred_list)
+    f1 = f1_score(y_true_list, y_pred_list)
+    accuracy = accuracy_score(y_true_list, y_pred_list)
+
+    print(f"Precision: {precision:.2f}")
+    print(f"Recall: {recall:.2f}")
+    print(f"F1 Score: {f1:.2f}")
+    print(f"Accuracy: {accuracy:.2f}")
+
+    result = {
+        "current_time": current_time,
+        "input_file_name": input_file_name,
+        "model": model,
+        "Precision": precision,
+        "Recall": recall,
+        "F1 Score": f1,
+        "Accuracy": accuracy
+    }
+
+    with open(f'output/{input_file_name}_{model}_{current_time}.result', 'w') as result_file:
+        json.dump(result, result_file, indent=4)
+
+
 def main():
     # 모델 설정
     # model = "gpt-3.5-turbo"
@@ -68,47 +129,28 @@ def main():
     # model = "gpt-4o"
     # model = "gpt-4-turbo"
     # model = "o1-mini"
-    input_file_name = 'diff_estimation_sampling_100(seed1115).jsonl'
+
+    input_file_name = 'diff_estimation_sampling_100(seed42).jsonl'
 
     with open(f'data/{input_file_name}', 'r') as file:
         patches = [json.loads(line) for line in file]
 
-    # 현재 시간 추가
     current_time = datetime.now().strftime('%Y%m%d_%H%M%S')
 
-    # output 파일 생성
     with open(f'output/{input_file_name}_{model}_{current_time}.jsonl', 'w') as output_file:
         try:
-            y_true = []
-            y_pred = []
+            y_true_list = []
+            y_pred_list = []
 
             for patch in tqdm(patches, desc="Processing patches"):
-                y_true.append(int(patch['y']))
-                review_needed, score, significance, complexity, consistency, risks = get_review_feedback(
-                    model, patch['patch'])
-                y_pred.append(int(review_needed))
+                y_true, y_pred, updated_patch = evaluate_patch(model, patch)
+                y_true_list.append(y_true)
+                y_pred_list.append(y_pred)
 
-                # 기존 데이터에 y_pred 추가
-                patch['y_pred'] = review_needed
-                patch['y_pred_score'] = score
-                patch['y_code_change_significance'] = significance
-                patch['y_complexity_of_changes'] = complexity
-                patch['y_code_consistency_and_readability'] = consistency
-                patch['y_potential_risks_or_issues'] = risks
+                output_file.write(json.dumps(updated_patch) + '\n')
 
-                # JSON 형식으로 저장
-                output_file.write(json.dumps(patch) + '\n')
-
-            # Precision, Recall, F1, Accuracy 계산
-            precision = precision_score(y_true, y_pred)
-            recall = recall_score(y_true, y_pred)
-            f1 = f1_score(y_true, y_pred)
-            accuracy = accuracy_score(y_true, y_pred)
-
-            print(f"Precision: {precision:.2f}")
-            print(f"Recall: {recall:.2f}")
-            print(f"F1 Score: {f1:.2f}")
-            print(f"Accuracy: {accuracy:.2f}")
+            save_metrics(y_true_list, y_pred_list,
+                         input_file_name, model, current_time)
 
         except Exception as e:
             print("Error:", e)
