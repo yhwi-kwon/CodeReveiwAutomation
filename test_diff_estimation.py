@@ -5,6 +5,7 @@ from tqdm import tqdm
 from datetime import datetime
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
 
+
 def get_review_feedback(model, patch):
     # OpenAI API 키 설정
     with open('gpt.key', 'r') as key_file:
@@ -19,6 +20,7 @@ def get_review_feedback(model, patch):
     response = openai.ChatCompletion.create(
         model=model,
         messages=[
+            # Changed 'system' to 'user'
             {"role": "user", "content": cur_prompt}
         ]
     )
@@ -26,15 +28,15 @@ def get_review_feedback(model, patch):
     # ChatGPT의 응답 내용 추출
     answer = response['choices'][0]['message']['content'].strip()
 
+    # bold markdown 제거
+    answer = answer.replace('**', '')
+
     # Regular expression to extract the number
     match = (
-        re.search(r'\*\*Code Review Required:\*\* (\d)', answer) or
-        re.search(r'\*\*Final Evaluation:\*\* (\d)', answer) or
-        re.search(r'Code Review Required: \*\*(\d)', answer) or
-        re.search(r'Final Evaluation: \*\*(\d)', answer) or
         re.search(r'Code Review Required: (\d)', answer) or
         re.search(r'Final Evaluation: (\d)', answer)
     )
+
     # Extract and print the result if found
     score = 3
     if match:
@@ -43,23 +45,37 @@ def get_review_feedback(model, patch):
         print("No score found")
         print(answer)
 
-    return (1 if score >= 3 else 0), score
+    # Additional score parsing
+    significance_match = re.search(r'Code Change Significance: (\d)', answer)
+    complexity_match = re.search(r'Complexity of Changes: (\d)', answer)
+    consistency_match = re.search(
+        r'Code Consistency and Readability: (\d)', answer)
+    risks_match = re.search(r'Potential Risks or Issues: (\d)', answer)
+
+    significance = int(significance_match.group(1)
+                       ) if significance_match else 3
+    complexity = int(complexity_match.group(1)) if complexity_match else 2
+    consistency = int(consistency_match.group(1)) if consistency_match else 4
+    risks = int(risks_match.group(1)) if risks_match else 1
+
+    return (1 if score >= 3 else 0), score, significance, complexity, consistency, risks
+
 
 def main():
     # 모델 설정
-    #model = "gpt-3.5-turbo"
-    #model = "gpt-4o-mini"
-    #model = "gpt-4o"
-    #model = "gpt-4-turbo"
-    model = "o1-mini"
+    # model = "gpt-3.5-turbo"
+    model = "gpt-4o-mini"
+    # model = "gpt-4o"
+    # model = "gpt-4-turbo"
+    # model = "o1-mini"
     input_file_name = 'diff_estimation_sampling_100(seed1115).jsonl'
-    
+
     with open(f'data/{input_file_name}', 'r') as file:
         patches = [json.loads(line) for line in file]
 
     # 현재 시간 추가
     current_time = datetime.now().strftime('%Y%m%d_%H%M%S')
-    
+
     # output 파일 생성
     with open(f'output/{input_file_name}_{model}_{current_time}.jsonl', 'w') as output_file:
         try:
@@ -68,13 +84,18 @@ def main():
 
             for patch in tqdm(patches, desc="Processing patches"):
                 y_true.append(int(patch['y']))
-                review_needed, score = get_review_feedback(model, patch['patch'])
+                review_needed, score, significance, complexity, consistency, risks = get_review_feedback(
+                    model, patch['patch'])
                 y_pred.append(int(review_needed))
-                
+
                 # 기존 데이터에 y_pred 추가
                 patch['y_pred'] = review_needed
                 patch['y_pred_score'] = score
-                
+                patch['y_code_change_significance'] = significance
+                patch['y_complexity_of_changes'] = complexity
+                patch['y_code_consistency_and_readability'] = consistency
+                patch['y_potential_risks_or_issues'] = risks
+
                 # JSON 형식으로 저장
                 output_file.write(json.dumps(patch) + '\n')
 
@@ -91,6 +112,7 @@ def main():
 
         except Exception as e:
             print("Error:", e)
+
 
 if __name__ == "__main__":
     main()
