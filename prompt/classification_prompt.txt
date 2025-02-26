@@ -1,0 +1,132 @@
+Analyze the given code snippet and classify the change into one of the following main categories and subcategories.
+
+Main Categories:
+1. Bug-Fixing
+2. Refactoring
+3. Testing
+4. Object-Design Principles
+5. Logging
+6. Documentation
+7. Other
+
+
+Subcategories: 
+
+1. Bug-Fixing
+- Fix Wrong Behavior
+    - Add method call
+    - Modify if condition
+    - Modify method call parameters
+    - Modify return statement
+    - Replace method call
+- Improve Code Robustness
+    - Exception Handling
+        - Add thrown exception
+        - Add try-catch/finally
+        - Introduce specific exception
+        - Remove thrown exception
+        - Replace thrown exception
+        - Use try-with-resources pattern
+- Introduce If Statement
+    - Add null check
+
+2. Refactoring
+- Extracting
+    - Extract method
+    - Extract statement to variable
+- Imports
+    - Avoid wildcard imports
+    - Make import static
+- Moving
+    - Method inlining
+    - Move class
+    - Move statement between methods
+    - Variable inlining
+- Performance
+    - Optimize performance
+- Readability
+    - Improve Formatting
+        - Add/remove parentheses
+        - Add/remove whitespace(s)
+    - Improve String Literals
+    - Remove Magic Number / Replace with Constant
+    - Remove Unneeded Code
+        - Remove deprecated/dead code
+        - Remove duplicated line
+        - Remove unneeded import
+        - Remove unneeded method
+        - Remove unneeded parameter
+        - Remove unneeded statement
+        - Remove unneeded variable cast
+    - Replace Operator
+    - Replace String Literals with Variable/Constant/Method Call
+    - Simplify Logic
+        - Merge multiple code statements
+        - Simplify if-else statement
+            - Simplify if condition
+        - Simplify method call
+    - Simplify object creation
+    - Simplify return statement
+    - Simplify variable declaration
+- Recommend Alternative Implementation
+    - Improve loop
+    - Replace method call
+- Renaming
+    - Rename class
+    - Rename method
+    - Rename variable/constant
+- Typing
+    - Change return type
+    - Change variable/constant type
+
+3. Testing
+- Expand Scope of Test Case
+    - Add assert statement
+- Fix Test Logic / Assert Statement
+    - Improve assert statement
+
+4. Object-Design Principles
+- Encapsulation and Scope
+    - Change class visibility
+    - Change method visibility
+    - Change variable visibility
+- Inheritance
+    - Add final modifier
+    - Modify call to parent’s constructor
+    - Remove call to parent's constructor
+
+5. Logging
+- Change log level
+- Improve log message
+- Introduce log statement
+
+6. Documentation
+- Fix formatting
+- Improve behavior description
+
+7. Other
+- Annotations
+    - Add annotation
+- Code Style
+    - Ensure adherence to code base
+- Improve Usability
+    - Improve error message
+- Process
+    - Changes to a file should not belong to a PR
+    - Revert code change
+    - Reusing Existing Code
+
+
+Instructions:
+
+Classify the code change into the most appropriate main category and subcategory.
+If multiple categories apply, choose the most specific and relevant one.
+If the change does not fit into any of the provided subcategories, classify it under "Other" and explain why.
+Input:
+{{input_code}}
+
+
+Expected Output Format:
+Main Category: <Selected category>
+Subcategory: <Most specific matching subcategory>
+Reason: <Brief explanation of why this classification was chosen>
