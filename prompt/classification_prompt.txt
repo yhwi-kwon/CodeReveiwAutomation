@@ -1,6 +1,38 @@
+# Task Description:
+You will be given a set of code changes written in a programming language from a pull request.
+Your task is to analyze the provided code diff, focusing on the modifications, and classify each change into one of the following main categories and subcategories.
+
+The goal is to determine what kind of code review is necessary based on the change.
+
+
+# Understanding the Code Diff Format:
+In a diff, each line is prefixed with a specific character that indicates the type of change:
+
+"+" (plus sign) → Represents newly added lines in the modified version of the file.
+"-" (minus sign) → Represents lines that were removed from the original file.
+Lines where both "-" and "+" appear in close proximity typically indicate modified lines rather than simple additions or deletions.
+Example:
+'''diff
+@@ -10,2 +10,2 @@
+- total_price = calculate_total(price, discount)
++ total_price = calculate_total(price, tax)
+'''
+Here, "discount" was replaced with "tax".
+
+# Evaluation Criteria:
+When analyzing the provided diff, assess the impact of the code changes and classify them based on:
+    - Logic Changes (e.g., modifications to method calls, conditions, return values)
+    - Security Implications (e.g., changes affecting authentication, validation, or data handling)
+    - Performance Impact (e.g., optimizations, inefficient code)
+    - Code Readability and Maintainability (e.g., refactoring, renaming, improving formatting)
+    - Bug Fixes and Robustness Improvements (e.g., exception handling, null checks)
+    - Test Coverage Enhancements (e.g., adding or modifying assertions)
+💡 For more accurate classification, always choose the most specific subcategory possible.
+More granular classifications improve the accuracy of the review process and help reviewers focus on relevant concerns.
+
 Analyze the given code snippet and classify the change into one of the following main categories and subcategories.
 
-Main Categories:
+# Main Categories:
 1. Bug-Fixing
 2. Refactoring
 3. Testing
@@ -10,90 +42,89 @@ Main Categories:
 7. Other
 
 
-Subcategories: 
-
+# Subcategories: 
 1. Bug-Fixing
-- Fix Wrong Behavior
-    - Add method call
-    - Modify if condition
-    - Modify method call parameters
-    - Modify return statement
-    - Replace method call
-- Improve Code Robustness
-    - Exception Handling
-        - Add thrown exception
-        - Add try-catch/finally
-        - Introduce specific exception
-        - Remove thrown exception
-        - Replace thrown exception
-        - Use try-with-resources pattern
-- Introduce If Statement
-    - Add null check
+    - Fix Wrong Behavior
+        - Add method call
+        - Modify if condition
+        - Modify method call parameters
+        - Modify return statement
+        - Replace method call
+    - Improve Code Robustness
+        - Exception Handling
+            - Add thrown exception
+            - Add try-catch/finally
+            - Introduce specific exception
+            - Remove thrown exception
+            - Replace thrown exception
+            - Use try-with-resources pattern
+    - Introduce If Statement
+        - Add null check
 
 2. Refactoring
-- Extracting
-    - Extract method
-    - Extract statement to variable
-- Imports
-    - Avoid wildcard imports
-    - Make import static
-- Moving
-    - Method inlining
-    - Move class
-    - Move statement between methods
-    - Variable inlining
-- Performance
-    - Optimize performance
-- Readability
-    - Improve Formatting
-        - Add/remove parentheses
-        - Add/remove whitespace(s)
-    - Improve String Literals
-    - Remove Magic Number / Replace with Constant
-    - Remove Unneeded Code
-        - Remove deprecated/dead code
-        - Remove duplicated line
-        - Remove unneeded import
-        - Remove unneeded method
-        - Remove unneeded parameter
-        - Remove unneeded statement
-        - Remove unneeded variable cast
-    - Replace Operator
-    - Replace String Literals with Variable/Constant/Method Call
-    - Simplify Logic
-        - Merge multiple code statements
-        - Simplify if-else statement
-            - Simplify if condition
-        - Simplify method call
-    - Simplify object creation
-    - Simplify return statement
-    - Simplify variable declaration
-- Recommend Alternative Implementation
-    - Improve loop
-    - Replace method call
-- Renaming
-    - Rename class
-    - Rename method
-    - Rename variable/constant
-- Typing
-    - Change return type
-    - Change variable/constant type
+    - Extracting
+        - Extract method
+        - Extract statement to variable
+    - Imports
+        - Avoid wildcard imports
+        - Make import static
+    - Moving
+        - Method inlining
+        - Move class
+        - Move statement between methods
+        - Variable inlining
+    - Performance
+        - Optimize performance
+    - Readability
+        - Improve Formatting
+            - Add/remove parentheses
+            - Add/remove whitespace(s)
+        - Improve String Literals
+        - Remove Magic Number / Replace with Constant
+        - Remove Unneeded Code
+            - Remove deprecated/dead code
+            - Remove duplicated line
+            - Remove unneeded import
+            - Remove unneeded method
+            - Remove unneeded parameter
+            - Remove unneeded statement
+            - Remove unneeded variable cast
+        - Replace Operator
+        - Replace String Literals with Variable/Constant/Method Call
+        - Simplify Logic
+            - Merge multiple code statements
+            - Simplify if-else statement
+                - Simplify if condition
+            - Simplify method call
+        - Simplify object creation
+        - Simplify return statement
+        - Simplify variable declaration
+    - Recommend Alternative Implementation
+        - Improve loop
+        - Replace method call
+    - Renaming
+        - Rename class
+        - Rename method
+        - Rename variable/constant
+    - Typing
+        - Change return type
+        - Change variable/constant type
 
 3. Testing
-- Expand Scope of Test Case
-    - Add assert statement
-- Fix Test Logic / Assert Statement
-    - Improve assert statement
+    - Expand Scope of Test Case
+        - Add assert statement
+    - Fix Test Logic / Assert Statement
+        - Improve assert statement
 
 4. Object-Design Principles
-- Encapsulation and Scope
-    - Change class visibility
-    - Change method visibility
-    - Change variable visibility
-- Inheritance
-    - Add final modifier
-    - Modify call to parent’s constructor
-    - Remove call to parent's constructor
+    - Encapsulation and Scope
+        - Change class visibility
+        - Change method visibility
+        - Change variable visibility
+    - Inheritance
+        - Add final modifier
+        - Modify call to parent’s constructor
+        - Remove call to parent's constructor
 
 5. Logging
 - Change log level
@@ -101,32 +132,43 @@ Subcategories:
 - Introduce log statement
 
 6. Documentation
-- Fix formatting
-- Improve behavior description
+    - Fix formatting
+    - Improve behavior description
 
 7. Other
-- Annotations
-    - Add annotation
-- Code Style
-    - Ensure adherence to code base
-- Improve Usability
-    - Improve error message
-- Process
-    - Changes to a file should not belong to a PR
-    - Revert code change
-    - Reusing Existing Code
+    - Annotations
+        - Add annotation
+    - Code Style
+        - Ensure adherence to code base
+    - Improve Usability
+        - Improve error message
+    - Process
+        - Changes to a file should not belong to a PR
+        - Revert code change
+        - Reusing Existing Code
 
 
-Instructions:
+# Instructions:
+1. Examine the provided code diff carefully.
+2. Determine the type of review that would be required for this change.
+3. Choose up to three possible categories, prioritizing the most relevant and specific ones.
+    - The first category should be the most probable classification.
+    - The second and third categories (if applicable) should be alternative classifications that might also be relevant based on the context.
+4. If the change does not fit into any defined subcategories, classify it under "Other" and explain why.# Input:
 
-Classify the code change into the most appropriate main category and subcategory.
-If multiple categories apply, choose the most specific and relevant one.
-If the change does not fit into any of the provided subcategories, classify it under "Other" and explain why.
-Input:
+#Input: 
 {{input_code}}
 
 
-Expected Output Format:
-Main Category: <Selected category>
-Subcategory: <Most specific matching subcategory>
-Reason: <Brief explanation of why this classification was chosen>
+# Expected Output Format:
+Primary Category: <Most probable category>  
+Primary Subcategory: <Most specific matching subcategory>  
+Primary Reason: <Brief explanation of why this classification was chosen>  
+
+Secondary Category: <Second most probable category (if applicable)>  
+Secondary Subcategory: <Most specific matching subcategory>  
+Secondary Reason: <Brief explanation of why this classification might also be relevant>  
+
+Tertiary Category: <Third most probable category (if applicable)>  
+Tertiary Subcategory: <Most specific matching subcategory>  
+Tertiary Reason: <Brief explanation of why this classification might also be relevant>  

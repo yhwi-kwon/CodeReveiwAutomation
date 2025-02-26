@@ -29,40 +29,92 @@ def get_classification(model, input_code):
     # bold markdown 제거
     answer = answer.replace('**', '')
 
-    # Regular expression to extract the category, subcategory, and reason
-    main_category_match = re.search(r'Main Category: (.+)', answer)
-    subcategory_match = re.search(r'Subcategory: (.+)', answer)
-    reason_match = re.search(r'Reason: (.+)', answer)
+    # Regular expression to extract the categories, subcategories, and reasons
+    primary_category_match = re.search(r'Primary Category: (.+)', answer)
+    primary_subcategory_match = re.search(r'Primary Subcategory: (.+)', answer)
+    primary_reason_match = re.search(r'Primary Reason: (.+)', answer)
+
+    secondary_category_match = re.search(r'Secondary Category: (.+)', answer)
+    secondary_subcategory_match = re.search(
+        r'Secondary Subcategory: (.+)', answer)
+    secondary_reason_match = re.search(r'Secondary Reason: (.+)', answer)
+
+    tertiary_category_match = re.search(r'Tertiary Category: (.+)', answer)
+    tertiary_subcategory_match = re.search(
+        r'Tertiary Subcategory: (.+)', answer)
+    tertiary_reason_match = re.search(r'Tertiary Reason: (.+)', answer)
 
     # Extract and print the result if found
-    main_category = "unknown"
-    subcategory = "unknown"
-    reason = "unknown"
-    if main_category_match:
-        main_category = main_category_match.group(1).strip().lower()
-    if subcategory_match:
-        subcategory = subcategory_match.group(1).strip()
-    if reason_match:
-        reason = reason_match.group(1).strip()
+    primary_category = "unknown"
+    primary_subcategory = "unknown"
+    primary_reason = "unknown"
+    if primary_category_match:
+        primary_category = primary_category_match.group(1).strip().lower()
+    if primary_subcategory_match:
+        primary_subcategory = primary_subcategory_match.group(1).strip()
+    if primary_reason_match:
+        primary_reason = primary_reason_match.group(1).strip()
 
-    return main_category, subcategory, reason
+    secondary_category = "unknown"
+    secondary_subcategory = "unknown"
+    secondary_reason = "unknown"
+    if secondary_category_match:
+        secondary_category = secondary_category_match.group(1).strip().lower()
+    if secondary_subcategory_match:
+        secondary_subcategory = secondary_subcategory_match.group(1).strip()
+    if secondary_reason_match:
+        secondary_reason = secondary_reason_match.group(1).strip()
+
+    tertiary_category = "unknown"
+    tertiary_subcategory = "unknown"
+    tertiary_reason = "unknown"
+    if tertiary_category_match:
+        tertiary_category = tertiary_category_match.group(1).strip().lower()
+    if tertiary_subcategory_match:
+        tertiary_subcategory = tertiary_subcategory_match.group(1).strip()
+    if tertiary_reason_match:
+        tertiary_reason = tertiary_reason_match.group(1).strip()
+
+    return primary_category, primary_subcategory, primary_reason, secondary_category, secondary_subcategory, secondary_reason, tertiary_category, tertiary_subcategory, tertiary_reason
 
 
-def evaluate_patch(model, patch):
-    y_true_categories = patch['first_category'].split(
-        ';')  # Split multiple categories
+def evaluate_patch(model, patch, TOP):
+    y_true_categories = [category.strip().lower() for category in patch['first_category'].split(
+        ';')]  # Split multiple categories and convert to lowercase
     input_code = patch['input_code']
-    y_pred, subcategory, reason = get_classification(model, input_code)
+    primary_category, primary_subcategory, primary_reason, secondary_category, secondary_subcategory, secondary_reason, tertiary_category, tertiary_subcategory, tertiary_reason = get_classification(
+        model, input_code)
 
-    patch['y_pred'] = y_pred
-    patch['subcategory'] = subcategory
-    patch['reason'] = reason
+    primary_category = primary_category.strip().lower() or "refactoring"
+    secondary_category = secondary_category.strip().lower() or "refactoring"
+    tertiary_category = tertiary_category.strip().lower() or "refactoring"
 
-    # Check if y_pred is in y_true categories
-    y_true = "unknown"
+    patch['primary_category'] = primary_category
+    patch['primary_subcategory'] = primary_subcategory
+    patch['primary_reason'] = primary_reason
+    patch['secondary_category'] = secondary_category
+    patch['secondary_subcategory'] = secondary_subcategory
+    patch['secondary_reason'] = secondary_reason
+    patch['tertiary_category'] = tertiary_category
+    patch['tertiary_subcategory'] = tertiary_subcategory
+    patch['tertiary_reason'] = tertiary_reason
+
+    # Check if primary_category, secondary_category, or tertiary_category is in y_true categories
+    y_true = y_true_categories[0]
+    y_pred = primary_category
+
     for category in y_true_categories:
-        if y_pred == category.strip().lower():  # Convert to lowercase for comparison
-            y_true = category.strip().lower()
+        if TOP >= 1 and primary_category == category:  # Already converted to lowercase for comparison
+            y_true = category
+            y_pred = primary_category
+            break
+        elif TOP >= 2 and secondary_category == category:
+            y_true = category
+            y_pred = secondary_category
+            break
+        elif TOP >= 3 and tertiary_category == category:
+            y_true = category
+            y_pred = tertiary_category
             break
 
     return y_true, y_pred, patch
@@ -91,11 +143,20 @@ def save_metrics(y_true_list, y_pred_list, input_file_name, model, current_time)
 
     with open(f'output/1.2/{input_file_name}_{model}_{current_time}.result', 'w') as result_file:
         json.dump(result, result_file, indent=4)
+    print(
+        f"Metrics saved to output/1.2/{input_file_name}_{model}_{current_time}.result")
 
 
 def main():
     # 모델 설정
-    model = "gpt-3.5-turbo"
+    # model = "gpt-3.5-turbo"
+    model = "gpt-4o-mini"
+    # model = "gpt-4o"
+    # model = "gpt-4-turbo"
+    # model = "o3-mini"
+    # model = "o1-mini"
+
+    TOP = 1
 
     input_file_name = 'df_clnl_4.jsonl'
 
@@ -111,7 +172,8 @@ def main():
 
         for patch in tqdm(patches, desc="Processing patches"):
             try:
-                y_true, y_pred, updated_patch = evaluate_patch(model, patch)
+                y_true, y_pred, updated_patch = evaluate_patch(
+                    model, patch, TOP)
                 y_true_list.append(y_true)
                 y_pred_list.append(y_pred)
 
