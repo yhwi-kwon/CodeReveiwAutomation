@@ -53,6 +53,7 @@ def get_review_feedback(model, patch, language):
         re.search(r'Final Evaluation (1-5): (\d)', answer) or
         re.search(r'Final Score: (\d)', answer) or
         re.search(r'Final Evaluation Score: (\d)', answer) or
+        re.search(r'Final Evaluation (overall): (\d)', answer) or
         re.search(r'Final Evaluation (1-5 scores ONLY): (\d)', answer)
     )
 
@@ -125,9 +126,10 @@ def save_metrics(y_true_list, y_pred_list, input_file_name, model, current_time)
 def main():
     # 모델 설정
     # model = "gpt-3.5-turbo"
-    model = "gpt-4o-mini"
-    # model = "gpt-4o"
+    # model = "gpt-4o-mini"
+    model = "gpt-4o"
     # model = "gpt-4-turbo"
+    # model = "o3-mini"
     # model = "o1-mini"
 
     input_file_name = 'diff_estimation_sampling_100(seed42).jsonl'
@@ -138,22 +140,21 @@ def main():
     current_time = datetime.now().strftime('%Y%m%d_%H%M%S')
 
     with open(f'output/{input_file_name}_{model}_{current_time}.jsonl', 'w') as output_file:
-        try:
-            y_true_list = []
-            y_pred_list = []
 
-            for patch in tqdm(patches, desc="Processing patches"):
+        y_true_list = []
+        y_pred_list = []
+
+        for patch in tqdm(patches, desc="Processing patches"):
+            try:
                 y_true, y_pred, updated_patch = evaluate_patch(model, patch)
                 y_true_list.append(y_true)
                 y_pred_list.append(y_pred)
 
                 output_file.write(json.dumps(updated_patch) + '\n')
-
-            save_metrics(y_true_list, y_pred_list,
-                         input_file_name, model, current_time)
-
-        except Exception as e:
-            print("Error:", e)
+            except Exception as e:
+                print("Error:", e)
+        save_metrics(y_true_list, y_pred_list,
+                     input_file_name, model, current_time)
 
 
 if __name__ == "__main__":
