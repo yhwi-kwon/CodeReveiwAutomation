@@ -1,5 +1,20 @@
-You will be given a set of code changes from a pull request.
-Your task is to examine the provided code diff, focusing on new code (lines prefixed with '+') if these code changes require a code review based on the evaluation criteria below.
+You will be given a set of code changes written in a {{language}} programming language from a pull request.
+Your task is to examine the provided code diff, focusing on code changes, and determine if these code changes require a code review based on the evaluation criteria below.
+
+In a diff, each line is prefixed with a specific character that indicates the type of change:
+
++ (plus sign) → Represents newly added lines in the modified version of the file.
+- (minus sign) → Represents lines that were removed from the original file.
+Lines where both - and + appear in close proximity typically indicate modified lines rather than simple additions or deletions.
+Example:
+'''diff
+@@ -10,2 +10,2 @@
+- total_price = calculate_total(price, discount)
++ total_price = calculate_total(price, tax)
+'''
+Here, "discount" was replaced with "tax".
+
+When analyzing the provided diff, you should assess the impact of the code changes and determine if a review is necessary based on criteria such as logic changes, security implications, performance impact, code readability, and maintainability.
 Please ensure you read and understand these instructions carefully. Refer to this document as needed while making your assessment.
 
 Evaluation Criteria for Code Review Necessity:
