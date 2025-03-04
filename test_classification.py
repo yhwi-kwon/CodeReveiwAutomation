@@ -5,6 +5,7 @@ from tqdm import tqdm
 from datetime import datetime
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
 import pandas as pd
+import asyncio
 
 
 def get_classification(model, input_code):
@@ -78,7 +79,7 @@ def get_classification(model, input_code):
     return primary_category, primary_subcategory, primary_reason, secondary_category, secondary_subcategory, secondary_reason, tertiary_category, tertiary_subcategory, tertiary_reason
 
 
-def evaluate_patch(model, patch, TOP):
+async def evaluate_patch(model, patch, TOP):
     y_true_categories = [category.strip().lower() for category in patch['first_category'].split(
         ';')]  # Split multiple categories and convert to lowercase
     input_code = patch['input_code']
@@ -120,34 +121,36 @@ def evaluate_patch(model, patch, TOP):
     return y_true, y_pred, patch
 
 
-def save_metrics(y_true_list, y_pred_list, input_file_name, model, current_time):
+def save_metrics(y_true_list, y_pred_list, input_file_name, model, current_time, TOP):
     precision = precision_score(y_true_list, y_pred_list, average='macro')
     recall = recall_score(y_true_list, y_pred_list, average='macro')
     f1 = f1_score(y_true_list, y_pred_list, average='macro')
     accuracy = accuracy_score(y_true_list, y_pred_list)
 
-    print(f"Precision: {precision:.2f}")
-    print(f"Recall: {recall:.2f}")
-    print(f"F1 Score: {f1:.2f}")
-    print(f"Accuracy: {accuracy:.2f}")
+    # print(f"Precision: {precision:.2f}")
+    # print(f"Recall: {recall:.2f}")
+    # print(f"F1 Score: {f1:.2f}")
+    print(f"TOP {TOP} Accuracy: {accuracy:.2f}")
 
     result = {
         "current_time": current_time,
         "input_file_name": input_file_name,
         "model": model,
+        "TOP": TOP,
         "Precision": precision,
         "Recall": recall,
         "F1 Score": f1,
         "Accuracy": accuracy
     }
 
-    with open(f'output/1.2/{input_file_name}_{model}_{current_time}.result', 'w') as result_file:
+    with open(f'output/1.2/{input_file_name}_{model}_{current_time}.result', 'a') as result_file:
         json.dump(result, result_file, indent=4)
+        result_file.write('\n')
     print(
         f"Metrics saved to output/1.2/{input_file_name}_{model}_{current_time}.result")
 
 
-def main():
+async def main():
     # 모델 설정
     # model = "gpt-3.5-turbo"
     model = "gpt-4o-mini"
@@ -156,33 +159,44 @@ def main():
     # model = "o3-mini"
     # model = "o1-mini"
 
-    TOP = 1
+    TOP = 3
 
-    input_file_name = 'df_clnl_4.jsonl'
+    input_file_name = 'df_clnl_4_test3.jsonl'
 
     with open(f'data/{input_file_name}', 'r') as file:
         patches = [json.loads(line) for line in file]
 
     current_time = datetime.now().strftime('%Y%m%d_%H%M%S')
 
-    with open(f'output/1.2/{input_file_name}_{model}_{current_time}.jsonl', 'w') as output_file:
+    from tqdm.asyncio import tqdm_asyncio
 
+    async def process_top(top):
         y_true_list = []
         y_pred_list = []
+        tasks = []
 
-        for patch in tqdm(patches, desc="Processing patches"):
-            try:
-                y_true, y_pred, updated_patch = evaluate_patch(
-                    model, patch, TOP)
+        pbar = tqdm_asyncio(total=len(patches), desc=f"Processing TOP={top}")
+
+        async def process_patch(patch):
+            result = await evaluate_patch(model, patch, top)
+            pbar.update(1)
+            return result
+
+        tasks = [process_patch(patch) for patch in patches]
+        results = await asyncio.gather(*tasks)
+
+        pbar.close()
+
+        with open(f'output/1.2/{input_file_name}_{model}_{current_time}.jsonl', 'a') as output_file:
+            for y_true, y_pred, updated_patch in results:
                 y_true_list.append(y_true)
                 y_pred_list.append(y_pred)
-
                 output_file.write(json.dumps(updated_patch) + '\n')
-            except Exception as e:
-                print("Error:", e)
-        save_metrics(y_true_list, y_pred_list,
-                     input_file_name, model, current_time)
 
+        save_metrics(y_true_list, y_pred_list,
+                     input_file_name, model, current_time, top)
+
+    await asyncio.gather(*(process_top(top) for top in range(1, TOP + 1)))
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
