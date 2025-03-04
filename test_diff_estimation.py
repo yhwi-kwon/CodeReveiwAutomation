@@ -150,29 +150,48 @@ async def main():
 
     current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-    async with aiofiles.open(
-        f"output/1.1/{input_file_name}_{model}_{current_time}.jsonl", "w"
-    ) as output_file:
+    output_path = f"output/1.1/{input_file_name}_{model}_{current_time}.jsonl"
 
+    async def process_patch(patch, model, pbar):
+        """단일 패치를 평가하고 결과를 반환"""
+        try:
+            y_true, y_pred, updated_patch = await evaluate_patch(model, patch)
+            pbar.update(1)  # tqdm 수동 업데이트
+            return y_true, y_pred, updated_patch
+        except Exception as e:
+            print(f"Error processing patch: {e}")
+            return None
+
+    # tqdm 설정
+    progress_bar = tqdm_asyncio(
+        total=len(patches), desc="Processing patches", dynamic_ncols=True
+    )
+
+    # 비동기 작업 생성
+    tasks = [
+        asyncio.create_task(process_patch(patch, model, progress_bar))
+        for patch in patches
+    ]
+
+    # 모든 패치 병렬 처리
+    results = await asyncio.gather(*tasks)
+
+    progress_bar.close()  # tqdm 닫기
+
+    # 결과 저장 (동기 방식으로 처리하여 속도 최적화)
+    with open(output_path, "w") as output_file:
         y_true_list = []
         y_pred_list = []
 
-        # 비동기 병렬 처리
-        tasks = [evaluate_patch(model, patch) for patch in patches]
-
-        for result in tqdm_asyncio.as_completed(tasks, desc="Processing patches"):
-            try:
-                y_true, y_pred, updated_patch = await result
+        for result in results:
+            if result:
+                y_true, y_pred, updated_patch = result
                 y_true_list.append(y_true)
                 y_pred_list.append(y_pred)
+                output_file.write(json.dumps(updated_patch) + "\n")
 
-                await output_file.write(json.dumps(updated_patch) + "\n")
-            except Exception as e:
-                print("Error:", e)
-
-        await save_metrics(
-            y_true_list, y_pred_list, input_file_name, model, current_time
-        )
+    # 성능 지표 저장
+    await save_metrics(y_true_list, y_pred_list, input_file_name, model, current_time)
 
 
 if __name__ == "__main__":
