@@ -29,7 +29,7 @@ def get_classification(model, input_code):
     # bold markdown 제거
     answer = answer.replace("**", "")
 
-    def _extract_info(pattern, text, default="unknown", to_lower=False):
+    def extract_info(pattern, text, default="unknown", to_lower=False):
         match = re.search(pattern, text)
         if match:
             result = match.group(1).strip()
@@ -37,19 +37,19 @@ def get_classification(model, input_code):
         return default
 
     # Extract categories, subcategories, and reasons
-    primary_category = _extract_info(r"Primary Category: (.+)", answer, to_lower=True)
-    primary_subcategory = _extract_info(r"Primary Subcategory: (.+)", answer)
-    primary_reason = _extract_info(r"Primary Reason: (.+)", answer)
+    primary_category = extract_info(r"Primary Category: (.+)", answer, to_lower=True)
+    primary_subcategory = extract_info(r"Primary Subcategory: (.+)", answer)
+    primary_reason = extract_info(r"Primary Reason: (.+)", answer)
 
-    secondary_category = _extract_info(
+    secondary_category = extract_info(
         r"Secondary Category: (.+)", answer, to_lower=True
     )
-    secondary_subcategory = _extract_info(r"Secondary Subcategory: (.+)", answer)
-    secondary_reason = _extract_info(r"Secondary Reason: (.+)", answer)
+    secondary_subcategory = extract_info(r"Secondary Subcategory: (.+)", answer)
+    secondary_reason = extract_info(r"Secondary Reason: (.+)", answer)
 
-    tertiary_category = _extract_info(r"Tertiary Category: (.+)", answer, to_lower=True)
-    tertiary_subcategory = _extract_info(r"Tertiary Subcategory: (.+)", answer)
-    tertiary_reason = _extract_info(r"Tertiary Reason: (.+)", answer)
+    tertiary_category = extract_info(r"Tertiary Category: (.+)", answer, to_lower=True)
+    tertiary_subcategory = extract_info(r"Tertiary Subcategory: (.+)", answer)
+    tertiary_reason = extract_info(r"Tertiary Reason: (.+)", answer)
 
     return (
         primary_category,
@@ -79,7 +79,9 @@ async def evaluate_patch(model, patch, TOP):
         tertiary_category,
         tertiary_subcategory,
         tertiary_reason,
-    ) = get_classification(model, input_code)
+    ) = await asyncio.to_thread(
+        get_classification, model, input_code
+    )  # IMPORTANT! get_classification 함수를 asyncio.to_thread로 비동기 실행
 
     primary_category = primary_category.strip().lower() or "other"
     secondary_category = secondary_category.strip().lower() or "other"
