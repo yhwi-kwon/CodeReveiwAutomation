@@ -119,8 +119,10 @@ def save_metrics(y_true_list, y_pred_list, input_file_name, model, current_time)
         "Accuracy": accuracy
     }
 
-    with open(f'output/{input_file_name}_{model}_{current_time}.result', 'w') as result_file:
+    with open(f'output/1.1/{input_file_name}_{model}_{current_time}.result', 'w') as result_file:
         json.dump(result, result_file, indent=4)
+    print(
+        f"Metrics saved to output/1.1/{input_file_name}_{model}_{current_time}.result")
 
 
 def main():
@@ -139,7 +141,7 @@ def main():
 
     current_time = datetime.now().strftime('%Y%m%d_%H%M%S')
 
-    with open(f'output/{input_file_name}_{model}_{current_time}.jsonl', 'w') as output_file:
+    with open(f'output/1.1/{input_file_name}_{model}_{current_time}.jsonl', 'w') as output_file:
 
         y_true_list = []
         y_pred_list = []
