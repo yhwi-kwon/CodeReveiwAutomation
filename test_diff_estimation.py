@@ -1,7 +1,10 @@
 import openai
 import json
 import re
+import aiofiles
+import asyncio
 from tqdm import tqdm
+from tqdm.asyncio import tqdm_asyncio
 from datetime import datetime
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
 
@@ -11,9 +14,11 @@ def get_review_feedback(model, patch, language):
     with open("gpt.key", "r") as key_file:
         api_key = key_file.readline().strip()
     openai.api_key = api_key
+    openai.seed = 1115
 
     diff_text = patch
-    prompt = open("prompt/diff_estimation_prompt.txt").read()
+    with open("prompt/diff_estimation_prompt.txt", "r") as prompt_file:
+        prompt = prompt_file.read()
     cur_prompt = prompt.replace("{{diff_text}}", diff_text)
 
     language_map = {
@@ -33,10 +38,7 @@ def get_review_feedback(model, patch, language):
     # ChatGPT API에 질문하여 코드리뷰 필요 여부 판단
     response = openai.ChatCompletion.create(
         model=model,
-        messages=[
-            # Changed 'system' to 'user'
-            {"role": "user", "content": cur_prompt}
-        ],
+        messages=[{"role": "user", "content": cur_prompt}],
     )
 
     # ChatGPT의 응답 내용 추출
@@ -55,6 +57,9 @@ def get_review_feedback(model, patch, language):
         or re.search(r"Final Evaluation Score: (\d)", answer)
         or re.search(r"Final Evaluation (overall): (\d)", answer)
         or re.search(r"Final Evaluation (1-5 scores ONLY): (\d)", answer)
+        or re.search(r"Code Review Required: Yes (\d)", answer)
+        or re.search(r"Code Review Required: No (\d)", answer)
+        or re.search(r"Final Evaluation (Score: (\d)):", answer)
     )
 
     # Extract and print the result if found
@@ -79,12 +84,14 @@ def get_review_feedback(model, patch, language):
     return (1 if score >= 3 else 0), score, significance, complexity, consistency, risks
 
 
-def evaluate_patch(model, patch):
+async def evaluate_patch(model, patch):
     y_true = int(patch["y"])
     language = patch.get("lang", "")
     review_needed, score, significance, complexity, consistency, risks = (
-        get_review_feedback(model, patch["patch"], language)
+        await asyncio.to_thread(get_review_feedback, model, patch["patch"], language)
     )
+    # await get_review_feedback(model, patch["patch"], language)
+
     y_pred = int(review_needed)
 
     patch["y_pred"] = review_needed
@@ -97,7 +104,7 @@ def evaluate_patch(model, patch):
     return y_true, y_pred, patch
 
 
-def save_metrics(y_true_list, y_pred_list, input_file_name, model, current_time):
+async def save_metrics(y_true_list, y_pred_list, input_file_name, model, current_time):
     precision = precision_score(y_true_list, y_pred_list)
     recall = recall_score(y_true_list, y_pred_list)
     f1 = f1_score(y_true_list, y_pred_list)
@@ -118,49 +125,55 @@ def save_metrics(y_true_list, y_pred_list, input_file_name, model, current_time)
         "Accuracy": accuracy,
     }
 
-    with open(
+    async with aiofiles.open(
         f"output/1.1/{input_file_name}_{model}_{current_time}.result", "w"
     ) as result_file:
-        json.dump(result, result_file, indent=4)
+        await result_file.write(json.dumps(result, indent=4))
     print(
         f"Metrics saved to output/1.1/{input_file_name}_{model}_{current_time}.result"
     )
 
 
-def main():
+async def main():
     # 모델 설정
     # model = "gpt-3.5-turbo"
-    # model = "gpt-4o-mini"
-    model = "gpt-4o"
+    model = "gpt-4o-mini"
+    # model = "gpt-4o"
     # model = "gpt-4-turbo"
     # model = "o3-mini"
     # model = "o1-mini"
 
     input_file_name = "diff_estimation_sampling_100(seed42).jsonl"
 
-    with open(f"data/{input_file_name}", "r") as file:
-        patches = [json.loads(line) for line in file]
+    async with aiofiles.open(f"data/{input_file_name}", "r") as file:
+        patches = [json.loads(line) for line in await file.readlines()]
 
     current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-    with open(
+    async with aiofiles.open(
         f"output/1.1/{input_file_name}_{model}_{current_time}.jsonl", "w"
     ) as output_file:
 
         y_true_list = []
         y_pred_list = []
 
-        for patch in tqdm(patches, desc="Processing patches"):
+        # 비동기 병렬 처리
+        tasks = [evaluate_patch(model, patch) for patch in patches]
+
+        for result in tqdm_asyncio.as_completed(tasks, desc="Processing patches"):
             try:
-                y_true, y_pred, updated_patch = evaluate_patch(model, patch)
+                y_true, y_pred, updated_patch = await result
                 y_true_list.append(y_true)
                 y_pred_list.append(y_pred)
 
-                output_file.write(json.dumps(updated_patch) + "\n")
+                await output_file.write(json.dumps(updated_patch) + "\n")
             except Exception as e:
                 print("Error:", e)
-        save_metrics(y_true_list, y_pred_list, input_file_name, model, current_time)
+
+        await save_metrics(
+            y_true_list, y_pred_list, input_file_name, model, current_time
+        )
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
