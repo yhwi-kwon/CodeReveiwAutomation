@@ -49,17 +49,19 @@ def get_review_feedback(model, patch, language):
 
     # Regular expression to extract the number
     match = (
-        re.search(r"Code Review Required: (\d)", answer)
-        or re.search(r"Code Review Required (1-5): (\d)", answer)
+        re.search(r"Code Review Required: \((\d)\)", answer)
+        or re.search(r"Code Review Required (\d)", answer)
+        or re.search(r"Code Review Required \((\d)\)", answer)
+        or re.search(r"Code Review Required \(1-5\): (\d)", answer)
         or re.search(r"Final Evaluation: (\d)", answer)
-        or re.search(r"Final Evaluation (1-5): (\d)", answer)
+        or re.search(r"Final Evaluation \(1-5\): (\d)", answer)
         or re.search(r"Final Score: (\d)", answer)
         or re.search(r"Final Evaluation Score: (\d)", answer)
-        or re.search(r"Final Evaluation (overall): (\d)", answer)
-        or re.search(r"Final Evaluation (1-5 scores ONLY): (\d)", answer)
+        or re.search(r"Final Evaluation \(overall\): (\d)", answer)
+        or re.search(r"Final Evaluation \(1-5 scores ONLY\): (\d)", answer)
         or re.search(r"Code Review Required: Yes (\d)", answer)
         or re.search(r"Code Review Required: No (\d)", answer)
-        or re.search(r"Final Evaluation (Score: (\d)):", answer)
+        or re.search(r"Final Evaluation \(Score: (\d)\):", answer)
     )
 
     # Extract and print the result if found
@@ -137,8 +139,8 @@ async def save_metrics(y_true_list, y_pred_list, input_file_name, model, current
 async def main():
     # 모델 설정
     # model = "gpt-3.5-turbo"
-    model = "gpt-4o-mini"
-    # model = "gpt-4o"
+    # model = "gpt-4o-mini"
+    model = "gpt-4o"
     # model = "gpt-4-turbo"
     # model = "o3-mini"
     # model = "o1-mini"
