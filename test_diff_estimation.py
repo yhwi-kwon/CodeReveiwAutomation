@@ -39,6 +39,7 @@ def get_review_feedback(model, patch, language):
     response = openai.ChatCompletion.create(
         model=model,
         messages=[{"role": "user", "content": cur_prompt}],
+        # temperature=0.0,
     )
 
     # ChatGPT의 응답 내용 추출
@@ -50,10 +51,15 @@ def get_review_feedback(model, patch, language):
     # Regular expression to extract the number
     match = (
         re.search(r"Code Review Required: \((\d)\)", answer)
+        or re.search(r"Code Review Required: (\d)", answer)
         or re.search(r"Code Review Required (\d)", answer)
         or re.search(r"Code Review Required \((\d)\)", answer)
         or re.search(r"Code Review Required \(1-5\): (\d)", answer)
+        or re.search(r"Code Review Required\): (\d)", answer)
+        or re.search(r"Review Required: (\d)", answer)
         or re.search(r"Final Evaluation: (\d)", answer)
+        or re.search(r"Final Evaluation: \((\d)\)", answer)
+        or re.search(r"Final Evaluation \((\d\))", answer)
         or re.search(r"Final Evaluation \(1-5\): (\d)", answer)
         or re.search(r"Final Score: (\d)", answer)
         or re.search(r"Final Evaluation Score: (\d)", answer)
@@ -62,6 +68,9 @@ def get_review_feedback(model, patch, language):
         or re.search(r"Code Review Required: Yes (\d)", answer)
         or re.search(r"Code Review Required: No (\d)", answer)
         or re.search(r"Final Evaluation \(Score: (\d)\):", answer)
+        or re.search(
+            r"Code Review Required \((\d\.\d)\)", answer
+        )  # Decimal point support
     )
 
     # Extract and print the result if found
@@ -69,8 +78,17 @@ def get_review_feedback(model, patch, language):
     if match:
         score = int(match.group(1))
     else:
-        print("No score found")
-        print(answer)
+        matches = re.findall(
+            r"Score: (\d)|score: (\d)", answer
+        )  # [('4', ''), ('4', ''), ('3', ''), ('4', ''), ('4', '')]
+        if matches:
+            # Extract the last non-empty match
+            last_match = next(filter(None, matches[-1]))
+            score = int(last_match)
+            print(f"matches score found : {matches} -> {score}")
+        else:
+            print("!!!No score found!!!")
+            print(answer)
 
     # Additional score parsing
     significance_match = re.search(r"Code Change Significance: (\d)", answer)
@@ -140,12 +158,13 @@ async def main():
     # 모델 설정
     # model = "gpt-3.5-turbo"
     # model = "gpt-4o-mini"
-    model = "gpt-4o"
+    # model = "gpt-4o"
     # model = "gpt-4-turbo"
-    # model = "o3-mini"
+    model = "o3-mini"
     # model = "o1-mini"
 
-    input_file_name = "diff_estimation_sampling_100(seed42).jsonl"
+    input_file_name = "diff_estimation_sampling_1000(seed1115).jsonl"
+    # input_file_name = "cls-test.jsonl"
 
     async with aiofiles.open(f"data/{input_file_name}", "r") as file:
         patches = [json.loads(line) for line in await file.readlines()]
