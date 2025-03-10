@@ -1,0 +1,3 @@
+testing -> expand scope of test case	in preparation of directly writing the /health endpoint one day.. we should have content checks.
+testing -> fix test logic/assert statement	I think, we should fix/improve AbstractRuleSetFactoryTest. I guess, both apex and visualforce rules are now tested, which is unnecessary.
+testing -> fix test logic/assert statement	This isn't critical for test coverage, but it seemed off that we had disabled wrapping the reader.

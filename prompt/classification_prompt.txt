@@ -154,7 +154,7 @@ Analyze the given code snippet and classify the change into one of the following
 3. Choose up to three possible categories, prioritizing the most relevant and specific ones.
     - The first category should be the most probable classification.
     - The second and third categories (if applicable) should be alternative classifications that might also be relevant based on the context.
-4. If the change does not fit into any defined subcategories, classify it under "Other" and explain why.# Input:
+4. If the change does not fit into any defined subcategories, classify it under "Other" and explain why.
 
 #Input: 
 {{input_code}}

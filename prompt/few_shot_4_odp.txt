@@ -1,0 +1,9 @@
+object design principles -> encapsulation and scope -> change class visibility	Why do we need to make so much more of this ScanContext public?
+object design principles -> encapsulation and scope -> change method visibility	You don't need to expose this method to do what you want. There are already public addNewGetMapping, addNewPostMapping, and addNewDeleteMapping methods.
+object design principles -> encapsulation and scope -> change method visibility	Can we avoid making this public with the other updates?
+object design principles -> encapsulation and scope -> change method visibility	Let me know if this is too pervasive. It is currently a private method in `BaseTableScan`. It seems both `SparkBatchQueryScan` and `SparkMergeScan` need to know the scan-specific split size when planning tasks. Therefore, I made it open. Another approach is to move all the `planTasks` logic to scan implementations, but for the combine tasks by partition feature, it requires grouping scan tasks by partition first, instead of returning them in an iterator fashion. I'm not sure if this is OK. `SparkMergeScan` also seems to re-implemented its own plan tasks logic.
+object design principles -> encapsulation and scope -> change method visibility	This needs to be public so that Avro can call it.
+object design principles -> encapsulation and scope -> change variable visibility	Why is this now public?
+object design principles -> encapsulation and scope -> change variable visibility	Does this need to be public or can it be package-private?
+object design principles -> inheritance -> add final modifier	These could be final
+object design principles -> inheritance -> replace parent class	I wouldn't make MethodDeclarator an AccessNode, nor an Annotatable. It's the MethodDeclaration that can be annotated, and has info about the modifiers, and is already an AccessNode

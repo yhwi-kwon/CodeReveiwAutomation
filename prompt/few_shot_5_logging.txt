@@ -1,0 +1,3 @@
+logging -> change log level	Are we sure that passing this log in warning does not risk spamming the logs of a node running on the mainnet or on ropsten etc ? Do we often receive invalid messages of this type ?
+logging -> change log level	Are you going to change that back?
+logging -> improve log message	These logs should probably use the `LOGTAG`

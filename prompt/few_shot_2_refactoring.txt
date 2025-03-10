@@ -1,0 +1,153 @@
+refactoring -> imports -> add import	Please use only `Logger` instead of `org.slf4j.Logger`
+refactoring -> imports -> avoid wildcard imports	Please do not use wildcard imports.
+refactoring -> imports -> avoid wildcard imports	Could you please leave the explicit imports?
+refactoring -> imports -> avoid wildcard imports	As Miklas stated, please avoid wildcard imports.
+refactoring -> imports -> avoid wildcard imports	Avoid wildcard imports
+refactoring -> imports -> avoid wildcard imports	Please avoid wildcard imports.
+refactoring -> imports -> avoid wildcard imports	hmmm did this pass spotless check? I don't think we typically use wildcard imports
+refactoring -> imports -> replace imported class	can use `getParamTypeName` instead
+refactoring -> imports -> replace imported class	javaparser-core has no dependencies and it should stay that way. So no log4j. And even then there would have been a preference for slf4j.
+refactoring -> moving -> move class	We call it Kind2 and move out of the `javaslang/control` package into the `javaslang`package. Maybe I will later generate Kind1..Kindn but that's another story.
+refactoring -> moving -> move method	This should be moved into the PrivacyBlockProcessor instead of adding the constructor here.
+refactoring -> moving -> move statement between methods	I think it might make more sense to do this in Name.upperCamel; it is the entry point for upper camel strings.
+refactoring -> moving -> move statement between methods	Good catch! Could you please move this to `PlaybackService.this.onPlaybackEnded`? I think it's more clean if everything is in one single place.
+refactoring -> moving -> move variable/constant	this is duplicate now. I suggest moving it into `MimeHeader`, we already have a bunch of other headers there
+refactoring -> moving -> move variable/constant	Since this constant is an implementation detail rather than a user-facing API, is it better to define it in a place where it is used?
+refactoring -> moving -> move variable/constant	I would rename the field to IMAGE_TYPES and make it an array. I don't think we need list operations. Also, if possible, I would move the field to the ApiFields class. What do you think?
+refactoring -> performance -> optimize performance	Found a better choice here that doesn't involve object creation: StringHelper.startsWith()
+refactoring -> performance -> optimize performance	Whoa, was this opto breaking something? I guess if this final path is filtered out, we still need the queue? Have you run the suggest benchmarks to see if removing this opto hurt performance?
+refactoring -> performance -> optimize performance	The `HitsThresholdChecker` should be created once and shared within the collectors ? We also don't need to use the `GlobalHitsThresholdChecker` if the executor is null or if there is a single slice.
+refactoring -> performance -> optimize performance	@aokolnychyi, shouldn't this check whether the operation is a delete? If this is invoked by `DELETE FROM` then we don't need to validate conflicting deletes.
+refactoring -> performance -> optimize performance	rather than generate code for this every time, stick it in `flatbuffers.h` (and call it `FLATBUFFERS_NOEXCEPT` to avoid clashes).
+refactoring -> readability -> add/remove "this" keyword	`this.` seems unnecessary
+refactoring -> readability -> improve formatting	... here the semicolon wanted to run away from the enum ;)
+refactoring -> readability -> improve formatting	@dansanduleac what do you think of this one? dots were aligned and no longer are  
+refactoring -> readability -> improve formatting	please use new line to maintain reasonable line width
+refactoring -> readability -> improve formatting	indentation of resulting file is different between 11 and 8 where 8 doesn't indent lines and 11 does
+refactoring -> readability -> improve formatting	looks like the code is not properly formatted. for example here are some missing spaces in **if** command. please take care and reformat the code using default android formatting.
+refactoring -> readability -> improve formatting	To much tabs here (1 tab)
+refactoring -> readability -> improve formatting	Can we put some of the code on a new line to make it more readable. The max line length was 120 now, right?
+refactoring -> readability -> improve formatting	1.not format code 2.failed but still continue? 3."UTF-8" can changed to java.nio.charset.StandardCharsets.UTF_8.name()
+refactoring -> readability -> improve formatting	remove this empty line pl0x
+refactoring -> readability -> improve formatting	please resolve the extra indentation
+refactoring -> readability -> improve formatting	Here is a newline missing
+refactoring -> readability -> improve formatting	Please add a space between `if` and `(`.
+refactoring -> readability -> improve formatting	Nit: Please fix indentation (note: Azkaban uses 2 spaces and not tabs).
+refactoring -> readability -> improve formatting	We prefer line wrapping that keeps arguments to the same method aligned rather than aligning arguments to different levels. Here, the lambda to create an `InternalRecordWrapper` is an argument to `transform`, but it is aligned with `deleteSchema.asStruct()` that is an argument to the outer `toEqualitySet` call. Instead, can you add a newline for each argument to `toEqualitySet`? If the line with the lambda is too long, then you can also add a newline for it that it indented from the start of the line with `transform`, so it is clear that it is an argument to `transform` and not `toEqualitySet`.
+refactoring -> readability -> improve formatting	one space missing at the beginning
+refactoring -> readability -> improve formatting	Nit: unnecessary whitespace change.
+refactoring -> readability -> improve formatting	Enter at the end of the file! :-D (and at the end of lines ;-) )
+refactoring -> readability -> improve formatting	Unnecessary new line
+refactoring -> readability -> improve formatting -> add/remove white space(s)	Wearing my extra-douche-bag hat I would say not spaces on a blank line. Maybe at some point we could have some automated process remove these things. For now I would not bother changing it.
+refactoring -> readability -> improve formatting -> add/remove white space(s)	Unnecessary new line
+refactoring -> readability -> improve formatting -> add/remove white space(s)	Nit: Please fix indentation (note: Azkaban uses 2 spaces and not tabs).
+refactoring -> readability -> improve formatting -> add/remove white space(s)	remove this empty line pl0x
+refactoring -> readability -> improve formatting -> add/remove white space(s)	Nit: indentation is 2 indents (4 spaces) from the previous line.
+refactoring -> readability -> improve formatting -> add/remove white space(s)	Please add a space between `if` and `(`.
+refactoring -> readability -> improve formatting -> add/remove white space(s)	please use new line to maintain reasonable line width
+refactoring -> readability -> improve formatting -> add/remove white space(s)	one space missing at the beginning
+refactoring -> readability -> improve formatting -> add/remove white space(s)	indentation of resulting file is different between 11 and 8 where 8 doesn't indent lines and 11 does
+refactoring -> readability -> improve formatting -> add/remove white space(s)	To much tabs here (1 tab)
+refactoring -> readability -> improve formatting -> add/remove white space(s)	Enter at the end of the file! :-D (and at the end of lines ;-) )
+refactoring -> readability -> improve formatting -> add/remove white space(s)	Can we put some of the code on a new line to make it more readable. The max line length was 120 now, right?
+refactoring -> readability -> improve formatting -> add/remove white space(s)	looks like the code is not properly formatted. for example here are some missing spaces in **if** command. please take care and reformat the code using default android formatting.
+refactoring -> readability -> improve formatting -> add/remove white space(s)	... here the semicolon wanted to run away from the enum ;)
+refactoring -> readability -> improve formatting -> add/remove white space(s)	Nit: unnecessary whitespace change.
+refactoring -> readability -> improve formatting -> add/remove white space(s)	please resolve the extra indentation
+refactoring -> readability -> improve order of statements	Maybe I should do some sorting so that these properties don't keep moving around...
+refactoring -> readability -> improve order of statements	Nit: Maybe merge this with the configProto check on line 208? Don't feel that strongly though, please keep separate if you prefer.
+refactoring -> readability -> improve string literals	nit: Is this actually just a http "unauthorised" response? Or is that too vague? If this is the right way to go ... is "token" the right word" Or do we want to say something else?
+refactoring -> readability -> improve string literals	Should its name be Time or Duration? I can see them both.
+refactoring -> readability -> improve string literals	Nit: no need for "to" at the end of the doc because it already uses "to which".
+refactoring -> readability -> improve string literals	Why upper case "R"?
+refactoring -> readability -> improve string literals	The '.' in the key names are used to separate namespaces, NOT to separate words. How about azkaban.external_resources.resource_manager? ---- Why is it better than using the full name in the variable name e.g. RESOURCE_MANAGER_LINK ?
+refactoring -> readability -> improve string literals	Looks like there are strange characters here.
+refactoring -> readability -> improve string literals	Typo, should read `firstTimeEmptySubject`
+refactoring -> readability -> improve string literals	Looks like there is a typo: `expireSnapshots` -> `removeFiles` or whatever name we go with.
+refactoring -> readability -> improve string literals	we should keep the camel case format - selfServe
+refactoring -> readability -> remove magic number/replace it with constant	Do we need to increase the DB version? Also, should probably be a constant, no?
+refactoring -> readability -> remove unneeded code -> remove deprecated/dead code	remove temporary code
+refactoring -> readability -> remove unneeded code -> remove deprecated/dead code	delete this class
+refactoring -> readability -> remove unneeded code -> remove unneeded constant from class	With the introduction of the enum(s) the constants in the store classes should be removed.
+refactoring -> readability -> remove unneeded code -> remove unneeded import	What is this used for?
+refactoring -> readability -> remove unneeded code -> remove unneeded import	This import can be removed.
+refactoring -> readability -> remove unneeded code -> remove unneeded import	This looks like an unused import to me?
+refactoring -> readability -> remove unneeded code -> remove unneeded import	Remove unused import
+refactoring -> readability -> remove unneeded code -> remove unneeded import	Please remove the unused imports :)
+refactoring -> readability -> remove unneeded code -> remove unneeded import	I was using this imports for writing the results to file to more easily check that it was valid JSON. You can probably remove these `java.io` imports.
+refactoring -> readability -> remove unneeded code -> remove unneeded import	This is an unused import failing recommit still.
+refactoring -> readability -> remove unneeded code -> remove unneeded import	please inline imports
+refactoring -> readability -> remove unneeded code -> remove unneeded method	This logic is already been performed in `CommandLine.defaultFactory().create(cls)` ... whats the point of repeating it here?
+refactoring -> readability -> remove unneeded code -> remove unneeded method	Use existing `grpcStubCallString` instead
+refactoring -> readability -> remove unneeded code -> remove unneeded method	Can all the BaseFeePerGas methods that are added be removed? It's not needed for the bomb and not referenced anywhere else in this PR.
+refactoring -> readability -> remove unneeded code -> remove unneeded object instance	The `HitsThresholdChecker` should be created once and shared within the collectors ? We also don't need to use the `GlobalHitsThresholdChecker` if the executor is null or if there is a single slice.
+refactoring -> readability -> remove unneeded code -> remove unneeded object instance	Found a better choice here that doesn't involve object creation: StringHelper.startsWith()
+refactoring -> readability -> remove unneeded code -> remove unneeded parameter	I am not sure why the API requires both project name and project ID as inputs. Wouldn't it introduce more opportunities for clients to make mistakes?
+refactoring -> readability -> remove unneeded code -> remove unneeded parameter	Since we kept the original constructor we might not need this change now.
+refactoring -> readability -> remove unneeded code -> remove unneeded parameter	is `fullName` still required as a parameter?
+refactoring -> readability -> remove unneeded code -> remove unneeded statement	This is not really needed, the line added in `GridNodeConfiguration.java` is what really fixes the `remoteHost` regression.
+refactoring -> readability -> remove unneeded code -> remove unneeded statement	The value of `key` will never be `null` at this point, because `getKey()` will generate a value if it is `null`.
+refactoring -> readability -> remove unneeded code -> remove unneeded statement	This can also be removed.
+refactoring -> readability -> remove unneeded code -> remove unneeded statement	This `if` is not necessary
+refactoring -> readability -> remove unneeded code -> remove unneeded statement	removed asserts from `Vector` as it's stable enough and it may hinder inlining, even if turned off :/
+refactoring -> readability -> remove unneeded code -> remove unneeded statement	Do you think you can come up with a better message? :-) It looks like this is not used anywhere. So maybe just delete the line.
+refactoring -> readability -> remove unneeded code -> remove unneeded statement	I think you can remove the whole line.
+refactoring -> readability -> remove unneeded code -> remove unneeded statement	ARM emulator gets tripped up on the copy/paste menu when tapping the text. Tapping on the text field isn't necessary for setting text.
+refactoring -> readability -> remove unneeded code -> remove unneeded statement	Is this needed? I don't see any uses.
+refactoring -> readability -> remove unneeded code -> remove unneeded statement	delete this line
+refactoring -> readability -> remove unneeded code -> remove unneeded variable cast	Does a type-hint work instead of casting? `return ofAll(toList().<U> zipWith(that, mapper));` (Probably not, just a question.)
+refactoring -> readability -> replace method with operator	I think this is should absolutely be `==`, as the interface cannot control the implementation of equals (and it's part of the contract of the enclosing function). Can we add this interface to the exceptions of the rule?
+refactoring -> readability -> replace method with operator	I think `==` for nodes is more readable than equals. An equals calls looks like it could be recursing, because intuitively two nodes are equal if their subtree are the equal. But everywhere you replaced, we don't want to test whether the subtrees are structurally equal, we want to know whether they're the same. Only `==` captures this intent, using equals obscures this. Not to mention that equals may NPE and is in that sense less ergonomic. I think we should enhance the rule with a list of types for which `==` is correct. Edit: in the meantime i think we could suppress those new violations...
+refactoring -> readability -> replace string literals with variable/constant/method call	can we make `replace-partitions` property a static variable in `SnaphotSummary.java`?
+refactoring -> readability -> replace string literals with variable/constant/method call	1.not format code 2.failed but still continue? 3."UTF-8" can changed to java.nio.charset.StandardCharsets.UTF_8.name()
+refactoring -> readability -> simplify logic	There is a simpler way to do this: 1. Don't bother with the whole lowerCamelApiTypeName in SampleConfig 2. Use this code: `return localVarName(Name.upperCamel(apiTypeName, "Service"));` Basically, each of the static creation methods of Name just need to have their arguments all be in the same casing, so you would just pass the upper camel string "Service" here.
+refactoring -> readability -> simplify logic -> simplify if-else statement	Nit: Maybe merge this with the configProto check on line 208? Don't feel that strongly though, please keep separate if you prefer.
+refactoring -> readability -> simplify logic -> simplify if-else statement	I don't think that we need to check `hasArray` here. I think the reason why this didn't previously check `hasArray` is that the array passed to `DataByteArray` must start at offset 0 and be valid through the array length, so a copy was needed in almost every case. It may be simpler to change this to use `ByteBuffers.toByteArray` and pass the result to create `DataByteArray`.
+refactoring -> readability -> simplify logic -> simplify if-else statement -> simplify if condition	showNPCs is not needed
+refactoring -> readability -> simplify logic -> simplify if-else statement -> simplify if condition	What is the reasoning for using the negation of `isOption()` instead of simply using `isPositional()` to identify a positional param?
+refactoring -> readability -> simplify logic -> simplify if-else statement -> simplify if condition	Is this second check necessary? we know that just after the plugin was created its metricRegistry is null, it's set only after `initializeMetrics` has been called.
+refactoring -> readability -> simplify logic -> simplify method call	@skestle Just recognized that the `::apply` is not necessary. Does it compile if you leave it away? Could you please check that, I'm on vacation and have no IDE at hand... Thx!
+refactoring -> readability -> simplify logic -> simplify return statement	Does a type-hint work instead of casting? `return ofAll(toList().<U> zipWith(that, mapper));` (Probably not, just a question.)
+refactoring -> readability -> simplify logic -> simplify switch-case	Is canceled considered failed?
+refactoring -> readability -> simplify logic -> simplify variable declaration	I would suggest putting this in the resources directory with the same package as of this test class. Then you can utilize the method azkaban.utils.TestUtils#readResource to read it as string.
+refactoring -> readability -> simplify logic -> simplify variable declaration	Please use only `Logger` instead of `org.slf4j.Logger`
+refactoring -> recommend alternative implementation	Let's use prepared statements here instead  
+refactoring -> recommend alternative implementation	This method can cause bugs. Why don't you use list of finalize statuses and then use join by comma and that will give you correct value. Use Apache Commons Lang library List<Integer> list = Arrays.asList(1,2,3,4,5,6,7); String str = org.apache.commons.lang.StringUtils.join(list, ","); You can use it at multiple places shown in this diff.
+refactoring -> recommend alternative implementation	highway have the same problem we can add a new method in invocation: mergeContext 1.if new context have more items, then addAll to new context, and replace old context 2.if new context have less items, then allAll to old context directly.
+refactoring -> recommend alternative implementation -> replace method call	One thing we can do in a follow up is use the shorthand calls, so You can just call `aSelection.unselect()` instead of calling the more verbose `execute()`. The fact that you have to check if the action is available sort of sucks though.
+refactoring -> recommend alternative implementation -> replace method call	The `JavaCompile#getToolChain` method got removed and I am not sure what a good replacement is. I replaced it with `targetCompat` for now but they are not equivalent. Maybe we can use `JavaVersion#current` here?
+refactoring -> recommend alternative implementation -> replace method call	What is the reasoning for using the negation of `isOption()` instead of simply using `isPositional()` to identify a positional param?
+refactoring -> recommend alternative implementation -> replace method call	Yeah, why not use this method instead of checking with `containsKey`?
+refactoring -> recommend alternative implementation -> replace method call	can you change this instead to just `type.toString()` and then you wouldn't have to expose the getBitMask in the enum. (Alternatively you could have used `type.hashCode()` but that doesn't feel as nice)
+refactoring -> renaming -> rename class	How about name it with NullResponseTypeProcessor
+refactoring -> renaming -> rename class	We call it Kind2 and move out of the `javaslang/control` package into the `javaslang`package. Maybe I will later generate Kind1..Kindn but that's another story.
+refactoring -> renaming -> rename class	I don't think we should have separate "transformer" and "generator" terms. I would suggest renaming this existing class `ImportTypeTransformer` to `StandardImportTypeTransformer` and renaming the interface `ImportGenerator` to `ImportTypeTransformer`.
+refactoring -> renaming -> rename method	Maybe `LibraryDetailsPanelType` would be clearer.
+refactoring -> renaming -> rename method	I think the name of the method should match the name of the action: `removeReachableFiles`.
+refactoring -> renaming -> rename method	Minor: If this is going to be public, we should fix the name. `get` doesn't add any value. How about `distributionModeFor` instead?
+refactoring -> renaming -> rename method	streamHandle sounds vague to me. Can you be more specific?
+refactoring -> renaming -> rename method	This is just a renaming of the function getResourceType() to getResourceReference()
+refactoring -> renaming -> rename method	I think we should name this `grpcMethodName` or similar. That is what this refers to, right? The fact that it is upper camel is an implementation.
+refactoring -> renaming -> rename method	I think this needs a more specific name, like `sequenceNumberOverride`
+refactoring -> renaming -> rename method	As this method is just set the internal cofigModel, it's better to use setConfigs instead of addConfigs.
+refactoring -> renaming -> rename method	weird naming: `is` but `fields` (plural or singular ?) . If the method checks if the fragment has an invalid value, then "hasInvalidValue" or "containsInvalidValue" is fine no ?
+refactoring -> renaming -> rename method	It just does the check, maybe we can name it as checkOperations.
+refactoring -> renaming -> rename package	I noticed in all of these we now have to import the PrecompiledContract under testing. Could also rename the package these are in s/precompiles/precompile to keep them in the same package as they are elsewhere.
+refactoring -> renaming -> rename parameter	How about putting `epochLength` (or something like that) in place of `a` just to make it easier to read
+refactoring -> renaming -> rename parameter	minor: please rename all occurrences of `A` to `T`. please also rename `v` to `value`.
+refactoring -> renaming -> rename variable/constant	hmm should this be `VERSION_81` instead?
+refactoring -> renaming -> rename variable/constant	I'm not sure if the boolean flags should always contain `is`, also I generally hate too long names... ;) we already know this is a section for circuit breakers, so the name doesn't have to repeat all of it. How about `cpuBreakerEnabled`, `memoryBreakerEnabled` etc?
+refactoring -> renaming -> rename variable/constant	minor: please rename all occurrences of `A` to `T`. please also rename `v` to `value`.
+refactoring -> renaming -> rename variable/constant	I believe in previous PRs @mccheah frequently used `fileSchema` -> `newFileSchema` type of renames to avoid hiding fields in builders. Would it make sense to make it consistent?
+refactoring -> renaming -> rename variable/constant	nit: `Contentful` is the word used in the GV API, without the uppercase in F
+refactoring -> renaming -> rename variable/constant	Shouldn't "source" be a noun? How about? -EXECUTION_SOURCE_USER -EXECUTION_SOURCE_SCHEDULE -EXECUTION_SOURCE_EVENT (because it's an event based trigger mechanism)
+refactoring -> renaming -> rename variable/constant	I would rename the field to IMAGE_TYPES and make it an array. I don't think we need list operations. Also, if possible, I would move the field to the ApiFields class. What do you think?
+refactoring -> renaming -> rename variable/constant	Could we shorten this constant to maybe `FEATURE_USER_AUTH`?
+refactoring -> renaming -> rename variable/constant	Could the name of the status be confusing to users? It says the execution stopped but is it a temporary stop? Will it continue to run at some point? To me the name does not suggest a final status but a transition one. WDYT @sshardool @jakhani @djaiswal83 @aditya1105
+refactoring -> typing -> change variable/constant type	Why not have mailPort as int since your are already parsing while calling t.connect ?
+refactoring -> typing -> change variable/constant type	why not just use `ManifestContent` instead of `Integer`?
+refactoring -> typing -> change variable/constant type	Just an understanding question: do we need a map here, would a list/set of Strings be sufficient? we are not adding entries with `false` here, are we? Being in the list already means it's used, right?
+refactoring -> typing -> change variable/constant type	I would rename the field to IMAGE_TYPES and make it an array. I don't think we need list operations. Also, if possible, I would move the field to the ApiFields class. What do you think?
+refactoring -> typing -> change variable/constant type	I think this can be an int because we have a default that is always valid, `0`.
+refactoring -> typing -> change variable/constant type	this can be integer
+refactoring -> typing -> change variable/constant type	Why the need for a `ConcurrentHashMap`?

@@ -1,0 +1,9 @@
+documentation -> fix formatting	there is still `2` spaces after `a` here.. :P
+documentation -> fix formatting	Nit: missing a space. I think we should phrase the new content a little differently. "It is important" isn't very clear. I think it should be "offsets will be returned in sorted order."
+documentation -> improve behavior description	In which case will this actually return 0? If there is no snapshot, then there is no `Snapshot` object, right?
+documentation -> improve behavior description	I missed this earlier, but why does this say "file blocks"? This should probably be "recommended split locations".
+documentation -> improve behavior description	could we please change that to something that indicates that this feature is not "production" ready!
+documentation -> improve behavior description	An iterator **of {\@code n} sequential elements,** where each element ~are~ **is the** given {\@code element}.
+documentation -> improve behavior description	instead of removing can you reference org.openqa.selenium.TakesScreenshot ?
+documentation -> improve behavior description	(...), where each element ~are~ **is the** given {\@code element}.
+documentation -> improve behavior description	Nit: this table's row key map -> this table's row keys map

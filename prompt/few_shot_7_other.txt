@@ -1,0 +1,44 @@
+other -> add annotation	It's strange here, because I saw the `TableColumn` is marked as `PublicEvolving`, but after released flink 1.12.0 it did not have any Interface compatibility guarantee. At least, it should marked as `deprecated`, and keep it a major release.
+other -> add annotation	should we consider add deprecated annotation here?
+other -> add annotation	this is a breaking API change. Do we really need to do it in 6.2.0? Can't we just deprecate the methods?
+other -> code style -> ensure adherence to code base	Can we put some of the code on a new line to make it more readable. The max line length was 120 now, right?
+other -> code style -> ensure adherence to code base	We use a suffix ".AUTOCREATED" for configsets, maybe we can use the same here?
+other -> code style -> ensure adherence to code base	everywhere else in the project, `LOGGER` is used
+other -> code style -> ensure adherence to code base	We were always using 0000000 prefix
+other -> code style -> ensure adherence to code base	we should keep the camel case format - selfServe
+other -> improve usability -> improve error message	Do you think you can come up with a better message? :-) It looks like this is not used anywhere. So maybe just delete the line.
+other -> improve usability -> improve error message	how about `Cannot encode row key with non-integer type` directly?
+other -> improve usability -> improve error message	nit: the others use the method name in the api and not the class name of the api
+other -> improve usability -> improve error message	Is the `flowDefinitionId` sufficient to uniquely identify the flow or does it need to be the tuple `<flowId,flowDefinitionId>` ?
+other -> process -> changes to a file should not belong to a pr	Remove this because we already added it in another pr
+other -> process -> changes to a file should not belong to a pr	Note that this is a bug, that should be fixed on master. `DECIMAL_LITERAL` cannot match any token, because it's declared with a `#`.
+other -> process -> changes to a file should not belong to a pr	This change is due to `clang_format` and is not related to this PR.
+other -> process -> changes to a file should not belong to a pr	do we need to add this one in this PR?
+other -> process -> changes to a file should not belong to a pr	This TODO isn't related to this change. We should remove it.
+other -> process -> revert code change	Why do we need this check? setCore already handles nulls.
+other -> process -> revert code change	if you are not dealing with cache now, please revert these changes. On their own they make little sense
+other -> process -> revert code change	it seems to me, the issue lies on `isEnum()` itself, returning false for something that is an enum. I'd rather change it there than here.
+other -> process -> revert code change	Since we kept the original constructor we might not need this change now.
+other -> process -> revert code change	Why did we update the to this api?
+other -> process -> revert code change	Did you verify this isn't going to break any existing test assumptions? We probably shouldn't modify this as we don't know what impact this is having on existing tests. It may invalidate a test that has different expectations of the scopes.
+other -> process -> revert code change	Could we keep this as a static reference (JsonPrinter.jsonAsDatasetDto(releasedVersion); and perhaps change the constructor line to just be a static set method and use that here instead? (I suspect it was the warning that 'static methods should be accessed in a static manner' from my IDE that caused me to make this change in the first place...) (I can make a PR to your branch if you want.)
+other -> process -> revert code change	why did you took `Exception` out? Is this method only throwing runtime exceptions?
+other -> process -> revert code change	Looks like this doesn't need to change. Can you revert this?
+other -> process -> revert code change	Is this Todo necessary?
+other -> process -> revert code change	Is it intentional that we removed this annotation?
+other -> process -> revert code change	@tmetzke shouldn't we replace this library with the `2.12.1` instead of removing it?
+other -> process -> revert code change	This was just fixed in mozilla-mobile/android-components#4892. @pocmo is cutting a new Android Components 19 dot release today, so you'll be able to jump to the new version and restore the build type.
+other -> process -> revert code change	The image attribute is not supposed to be the text of the node. I'd rather keep it separate (the previous `@Text` attribute was fine). A practical reason for that is in the future, other languages may have a way to get the text of their node, in which case that wouldn't be fetched with `getImage`, for compatibility, but probably with a `getText` method, or `getSourceCode` like in #1728. Also we *may* deprecate or otherwise put `getImage` out of use as soon as 7.0, given its contract is super loose.
+other -> process -> revert code change	Please revert changes to unrelated file
+other -> process -> revert code change	Why is api-version now removed in the generated code?
+other -> process -> revert code change	Need change it back?
+other -> process -> revert code change	Unnecessary new line
+other -> process -> revert code change	Looks like this didn't need to change.
+other -> process -> revert code change	isn't AZKABAN_FLOW_VERSION_2_0 more explicit?
+other -> process -> revert code change	Please revert the lines above. Not touching unrelated code keeps the git history clean.
+other -> process -> revert code change	Are you going to change that back?
+other -> replace annotation	This looks inverted to me: if `--rpc-require-chainid-in-txs=true`, then shouldn't `unprotectedTransactionsAllowed == false`? Suggest changing this variable to `requireTxReplayProtection` or similar. I think the flag name could be clearer as well, maybe: `--require-tx-replay-protection`.
+other -> replace annotation	I'll change that to "linkplain" for consistency :)
+other -> reuse existing code	better use `!isView()` so that we don't need to modify multiple lines in future.
+other -> reuse existing code	Use existing `grpcStubCallString` instead
+other -> reuse existing code	Use IOUtils instead
