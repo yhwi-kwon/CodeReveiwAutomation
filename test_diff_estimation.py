@@ -39,7 +39,7 @@ def get_review_feedback(model, patch, language):
     response = openai.ChatCompletion.create(
         model=model,
         messages=[{"role": "user", "content": cur_prompt}],
-        # temperature=0.0,
+        temperature=0.0,
     )
 
     # ChatGPT의 응답 내용 추출
@@ -157,10 +157,10 @@ async def save_metrics(y_true_list, y_pred_list, input_file_name, model, current
 async def main():
     # 모델 설정
     # model = "gpt-3.5-turbo"
-    # model = "gpt-4o-mini"
+    model = "gpt-4o-mini"
     # model = "gpt-4o"
     # model = "gpt-4-turbo"
-    model = "o3-mini"
+    # model = "o3-mini"
     # model = "o1-mini"
 
     input_file_name = "diff_estimation_sampling_1000(seed1115).jsonl"

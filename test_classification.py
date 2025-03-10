@@ -20,7 +20,9 @@ def get_classification(model, input_code):
     cur_prompt = prompt.replace("{{input_code}}", input_code)
 
     response = openai.ChatCompletion.create(
-        model=model, messages=[{"role": "user", "content": cur_prompt}]
+        model=model,
+        messages=[{"role": "user", "content": cur_prompt}],
+        temperature=0.0,
     )
 
     # ChatGPT의 응답 내용 추출
@@ -154,8 +156,8 @@ def save_metrics(y_true_list, y_pred_list, input_file_name, model, current_time,
 
 async def main():
     # 모델 설정
-    model = "gpt-3.5-turbo"
-    # model = "gpt-4o-mini"
+    # model = "gpt-3.5-turbo"
+    model = "gpt-4o-mini"
     # model = "gpt-4o"
     # model = "gpt-4-turbo"
     # model = "o3-mini"
@@ -163,7 +165,7 @@ async def main():
 
     TOP = 3
 
-    input_file_name = "df_clnl_4_test10.jsonl"
+    input_file_name = "df_clnl_4.jsonl"
 
     with open(f"data/{input_file_name}", "r") as file:
         patches = [json.loads(line) for line in file]
