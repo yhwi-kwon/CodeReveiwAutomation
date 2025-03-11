@@ -16,10 +16,10 @@ def get_review_feedback(model, patch, language):
     openai.api_key = api_key
     openai.seed = 1115
 
-    diff_text = patch
+    diff_code = patch
     with open("prompt/diff_estimation_prompt.txt", "r") as prompt_file:
         prompt = prompt_file.read()
-    cur_prompt = prompt.replace("{{diff_text}}", diff_text)
+    cur_prompt = prompt.replace("{{diff_code}}", diff_code)
 
     language_map = {
         "go": "Go",
@@ -96,10 +96,10 @@ def get_review_feedback(model, patch, language):
     consistency_match = re.search(r"Code Consistency and Readability: (\d)", answer)
     risks_match = re.search(r"Potential Risks or Issues: (\d)", answer)
 
-    significance = int(significance_match.group(1)) if significance_match else 3
-    complexity = int(complexity_match.group(1)) if complexity_match else 2
-    consistency = int(consistency_match.group(1)) if consistency_match else 4
-    risks = int(risks_match.group(1)) if risks_match else 1
+    significance = int(significance_match.group(1)) if significance_match else -1
+    complexity = int(complexity_match.group(1)) if complexity_match else -1
+    consistency = int(consistency_match.group(1)) if consistency_match else -1
+    risks = int(risks_match.group(1)) if risks_match else -1
 
     return (1 if score >= 3 else 0), score, significance, complexity, consistency, risks
 
