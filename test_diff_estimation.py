@@ -80,7 +80,7 @@ def get_review_feedback(model, patch, language):
     response = openai.ChatCompletion.create(
         model=model,
         messages=[{"role": "user", "content": cur_prompt}],
-        temperature=0.0,
+        temperature=1,
     )
 
     # ChatGPT의 응답 내용 추출
@@ -117,7 +117,9 @@ def get_review_feedback(model, patch, language):
     # Extract and print the result if found
     score = 3
     if match:
-        score = int(match.group(1))
+        score = int(
+            re.sub(r"[^\d]", "", match.group(1))
+        )  # Remove non-numeric characters
     else:
         matches = re.findall(
             r"Score: (\d)|score: (\d)", answer
@@ -125,7 +127,9 @@ def get_review_feedback(model, patch, language):
         if matches:
             # Extract the last non-empty match
             last_match = next(filter(None, matches[-1]))
-            score = int(last_match)
+            score = int(
+                re.sub(r"[^\d]", "", last_match)
+            )  # Remove non-numeric characters
             print(f"matches score found : {matches} -> {score}")
         else:
             print("!!!No score found!!!")
@@ -198,11 +202,11 @@ async def save_metrics(y_true_list, y_pred_list, input_file_name, model, current
 async def main():
     # 모델 설정
     # model = "gpt-3.5-turbo"
-    model = "gpt-4o-mini"
+    # model = "gpt-4o-mini"
     # model = "gpt-4o"
     # model = "gpt-4-turbo"
     # model = "o3-mini"
-    # model = "o1-mini"
+    model = "o1-mini"
 
     input_file_name = "diff_estimation_sampling_100(seed1115).jsonl"
     # input_file_name = "cls-test.jsonl"
