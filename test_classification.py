@@ -131,7 +131,7 @@ def save_metrics(y_true_list, y_pred_list, input_file_name, model, current_time,
     # print(f"Precision: {precision:.2f}")
     # print(f"Recall: {recall:.2f}")
     # print(f"F1 Score: {f1:.2f}")
-    print(f"TOP {TOP} Accuracy: {accuracy:.2f}")
+    print(f"TOP {TOP} Accuracy: {accuracy:.4f}")
 
     result = {
         "current_time": current_time,

@@ -140,10 +140,10 @@ async def save_metrics(y_true_list, y_pred_list, input_file_name, model, current
     f1 = f1_score(y_true_list, y_pred_list)
     accuracy = accuracy_score(y_true_list, y_pred_list)
 
-    print(f"Precision: {precision:.2f}")
-    print(f"Recall: {recall:.2f}")
-    print(f"F1 Score: {f1:.2f}")
-    print(f"Accuracy: {accuracy:.2f}")
+    print(f"Precision: {precision:.4f}")
+    print(f"Recall: {recall:.4f}")
+    print(f"F1 Score: {f1:.4f}")
+    print(f"Accuracy: {accuracy:.4f}")
 
     result = {
         "current_time": current_time,
