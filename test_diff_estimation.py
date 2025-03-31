@@ -7,6 +7,42 @@ from tqdm import tqdm
 from tqdm.asyncio import tqdm_asyncio
 from datetime import datetime
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
+from unidiff import PatchSet
+
+
+def analyze_diff_path_set(patch_set):
+    print_statements = []
+
+    # Parse the hunk header to extract line numbers and changes
+    for patched_file in patch_set:
+        for hunk in patched_file:
+            # Extract the line information from the hunk header
+            old_start, old_lines = hunk.source_start, hunk.source_length
+            new_start, new_lines = hunk.target_start, hunk.target_length
+            print_statements.append(
+                f"Changes start at line {old_start} in the original file and line {new_start} in the new file."
+            )
+            print_statements.append(
+                f"{old_lines} lines were modified in the original file, and {new_lines} lines were modified in the new file."
+            )
+
+    # Count the number of added and removed lines
+    added_lines = patch_set.added
+    removed_lines = patch_set.removed
+
+    print_statements.append(f"Total added lines: {added_lines}")
+    print_statements.append(f"Total removed lines: {removed_lines}")
+
+    return print_statements
+
+
+def create_patch_set(patch):
+    if not patch.startswith("---") or not patch.startswith("+++"):
+        patch = f"--- a/file\n+++ b/file\n{patch}"
+
+    # Create the PatchSet object
+    patch_set = PatchSet.from_string(patch)
+    return patch_set
 
 
 def get_review_feedback(model, patch, language):
@@ -20,6 +56,11 @@ def get_review_feedback(model, patch, language):
     with open("prompt/diff_estimation_prompt.txt", "r") as prompt_file:
         prompt = prompt_file.read()
     cur_prompt = prompt.replace("{{diff_code}}", diff_code)
+
+    patch = create_patch_set(diff_code)
+    diff_code_information = analyze_diff_path_set(patch)
+    diff_code_information = "\n".join(diff_code_information)
+    cur_prompt = cur_prompt.replace("{{diff_code_information}}", diff_code_information)
 
     language_map = {
         "go": "Go",
@@ -163,7 +204,7 @@ async def main():
     # model = "o3-mini"
     # model = "o1-mini"
 
-    input_file_name = "diff_estimation_sampling_1000(seed1115).jsonl"
+    input_file_name = "diff_estimation_sampling_100(seed1115).jsonl"
     # input_file_name = "cls-test.jsonl"
 
     async with aiofiles.open(f"data/{input_file_name}", "r") as file:
