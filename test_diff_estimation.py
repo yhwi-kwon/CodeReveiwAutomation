@@ -7,42 +7,7 @@ from tqdm import tqdm
 from tqdm.asyncio import tqdm_asyncio
 from datetime import datetime
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
-from unidiff import PatchSet
-
-
-def analyze_diff_path_set(patch_set):
-    print_statements = []
-
-    # Parse the hunk header to extract line numbers and changes
-    for patched_file in patch_set:
-        for hunk in patched_file:
-            # Extract the line information from the hunk header
-            old_start, old_lines = hunk.source_start, hunk.source_length
-            new_start, new_lines = hunk.target_start, hunk.target_length
-            print_statements.append(
-                f"Changes start at line {old_start} in the original file and line {new_start} in the new file."
-            )
-            print_statements.append(
-                f"{old_lines} lines were modified in the original file, and {new_lines} lines were modified in the new file."
-            )
-
-    # Count the number of added and removed lines
-    added_lines = patch_set.added
-    removed_lines = patch_set.removed
-
-    print_statements.append(f"Total added lines: {added_lines}")
-    print_statements.append(f"Total removed lines: {removed_lines}")
-
-    return print_statements
-
-
-def create_patch_set(patch):
-    if not patch.startswith("---") or not patch.startswith("+++"):
-        patch = f"--- a/file\n+++ b/file\n{patch}"
-
-    # Create the PatchSet object
-    patch_set = PatchSet.from_string(patch)
-    return patch_set
+from util.diff import analyze_diff_path_set, create_patch_set
 
 
 def get_review_feedback(model, patch, language):
@@ -80,7 +45,7 @@ def get_review_feedback(model, patch, language):
     response = openai.ChatCompletion.create(
         model=model,
         messages=[{"role": "user", "content": cur_prompt}],
-        temperature=1,
+        temperature=0.0,
     )
 
     # ChatGPT의 응답 내용 추출
@@ -202,11 +167,11 @@ async def save_metrics(y_true_list, y_pred_list, input_file_name, model, current
 async def main():
     # 모델 설정
     # model = "gpt-3.5-turbo"
-    # model = "gpt-4o-mini"
+    model = "gpt-4o-mini"
     # model = "gpt-4o"
     # model = "gpt-4-turbo"
     # model = "o3-mini"
-    model = "o1-mini"
+    # model = "o1-mini"
 
     input_file_name = "diff_estimation_sampling_100(seed1115).jsonl"
     # input_file_name = "cls-test.jsonl"
