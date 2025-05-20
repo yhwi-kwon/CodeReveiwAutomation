@@ -156,9 +156,9 @@ Analyze the given code snippet and classify the change into one of the following
     - The second and third categories (if applicable) should be alternative classifications that might also be relevant based on the context.
 4. If the change does not fit into any defined subcategories, classify it under "Other" and explain why.
 
-#Input: 
-{{input_code}}
 
+# Code Changes:
+{{diff_code}}
 
 # Expected Output Format:
 Primary Category: <Most probable category>  
