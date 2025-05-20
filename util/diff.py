@@ -1,3 +1,4 @@
+import unidiff
 from unidiff import PatchSet
 
 
@@ -31,6 +32,11 @@ def create_patch_set(patch):
     if not patch.startswith("---") or not patch.startswith("+++"):
         patch = f"--- a/file\n+++ b/file\n{patch}"
 
-    # Create the PatchSet object
-    patch_set = PatchSet.from_string(patch)
+    try:
+        # Create the PatchSet object
+        patch_set = PatchSet.from_string(patch)
+    except unidiff.errors.UnidiffParseError as e:
+        print(f"Error parsing patch: {e}")
+        patch_set = None  # Return None or handle the error as needed
+
     return patch_set
