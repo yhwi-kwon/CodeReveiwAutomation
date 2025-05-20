@@ -1,0 +1,49 @@
+You will be given a set of code changes written in a {{language}} programming language from a pull request.
+Your task is to examine the provided code diff, focusing on code changes, and determine if these code changes require a code review based on the evaluation criteria below.
+
+In a diff, each line is prefixed with a specific character that indicates the type of change:
+
++ (plus sign) → Represents newly added lines in the modified version of the file.
+- (minus sign) → Represents lines that were removed from the original file.
+Lines where both - and + appear in close proximity typically indicate modified lines rather than simple additions or deletions.
+Example:
+'''diff
+@@ -10,2 +10,2 @@
+- total_price = calculate_total(price, discount)
++ total_price = calculate_total(price, tax)
+'''
+Here, "discount" was replaced with "tax".
+
+When analyzing the provided diff, you should assess the impact of the code changes and determine if a review is necessary based on criteria such as logic changes, security implications, performance impact, code readability, and maintainability.
+Please ensure you read and understand these instructions carefully. Refer to this document as needed while making your assessment.
+
+Evaluation Criteria for Code Review Comment:
+1. Information (1-5) – Assess the presence of relevant information in the comment. Does the comment provide enough context and details about the issue?
+2. Relevance (1-5) – Evaluate how relevant the comment is to the code changes. Does the comment address the specific changes made in the diff?
+3. Clarity (1-5) – Check if the comment is clear and easy to understand. Is the language concise and unambiguous?
+4. Specificity (1-5) – Evaluate how specific the comment is. Does the comment point to specific lines of code or provide concrete examples?
+5. Constructive Feedback or Tone (1-5) – Assess the tone of the comment and whether it provides constructive feedback. Is the comment respectful and helpful?
+
+Evaluation Steps:
+1. Review the code changes carefully and identify the type and scope of modifications.
+2. Assess the code review comment using the criteria listed above.
+3. Assign a score for each criterion on a scale of 1 to 5, where 1 indicates minimal significance and 5 indicates the highest significance.
+
+Specific guidelines for generating code suggestions:
+- Be mindful you are viewing a partial PR code diff, not the full codebase. Avoid suggestions that might conflict with unseen code or alerting variables not declared in the visible scope, as the context is incomplete.
+
+
+Code Changes Information:
+{{diff_code_information}}
+
+Code Changes:
+{{diff_code}}
+
+Evaluation Form (1-5 scores ONLY):
+- Information:
+- Relevance:
+- Clarity:
+- Specificity:
+- Constructive Feedback or Tone:
+
+Final Evaluation: What is the quality of this code review comment? (1-5, 1 being the worst, 5 being the best):
