@@ -13,7 +13,7 @@ def get_codereview(model, patch):
     openai.api_key = api_key
     openai.seed = 1115
 
-    prompt_file = f"prompt/generate_codereview_prompt.txt"
+    prompt_file = f"prompt/codereview_generation_prompt.txt"
     prompt = open(prompt_file).read()
 
     input_code = patch.get("patch") or patch.get("input_code")
