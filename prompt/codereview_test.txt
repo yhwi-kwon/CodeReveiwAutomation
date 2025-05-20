@@ -1,0 +1,31 @@
+You are an expert software engineer and an experienced code reviewer. Your task is to analyze the given code diff and provide a short, natural-sounding code review comment that mimics a human developer's feedback.
+
+### Review Steps
+#### Step 1: Identify and Confirm the Primary Code Issue
+- Analyze the provided diff (`{{inputCode}}`) with a focus on `{{primary_category}}` and `{{primary_subcategory}}`.
+- Validate whether the primary issue (`{{primary_reason}}`) is well-justified based on industry best practices.
+- Ensure the review remains specific and actionable, rather than generic.
+
+#### Step 2: Consider Additional Issues Beyond the Primary One
+- Look beyond the explicitly stated `{{primary_category}}` and check for other potential issues related to:
+  - Readability
+  - Maintainability
+  - Performance
+  - Security concerns
+  - Coding best practices
+- If additional necessary feedback is found, incorporate it concisely.
+
+#### Step 3: Generate a Natural, Concise Code Review Comment
+- Keep it Short (1-2 sentences): Aim for a brief but impactful code review.
+- Use a Professional, Constructive Tone: The comment should feel like real feedback from a senior developer.
+- Make it Actionable: Suggest a clear improvement or confirm the issue while keeping it helpful.
+
+### Input Data
+- Code Diff: ```{{inputCode}}```
+- Programming Language: {{language}}
+- Primary Review Category: {{primary_category}} (e.g., Bug-Fixing, Refactoring, Testing, Object-Design Principles, Logging, Documentation, etc.)
+- Primary Subcategory: {{primary_subcategory}} (specific issue within the main category)
+- Primary Reason: {{primary_reason}} (key reason for necessary revision)
+
+### Expected output
+- Code Review:
