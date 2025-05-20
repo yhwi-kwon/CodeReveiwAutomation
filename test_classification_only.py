@@ -16,7 +16,7 @@ def get_classification(model, input_code):
     openai.api_key = api_key
     openai.seed = 1115
 
-    prompt = open("prompt/classification_prompt.txt").read()
+    prompt = open("prompt/diff_classification_prompt.txt").read()
     cur_prompt = prompt.replace("{{input_code}}", input_code)
     cur_prompt = prompt.replace("{{diff_code}}", input_code)
 
