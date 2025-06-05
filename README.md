@@ -16,13 +16,8 @@ These three core features enable scalable, consistent, and context-aware code re
 
 The following diagram illustrates the end-to-end workflow of the system:
 
-```mermaid
-graph TD
-  A[Input: Code Diff] --> B[Review Necessity Detection<br/>(test_diff_estimation.py)]
-  B --> C[Code Change Category Classification<br/>(test_classification.py)]
-  C --> D[Category-specific Comment Generation<br/>(test_codereview.py)]
-  D --> E[Output: Review Comments / Categories / Metrics]
-```
+<img width="1107" alt="overview" src="https://github.com/user-attachments/assets/c8412311-f7d0-4396-8070-9877ea80ced8" />
+
 
 - **Input:** Code diff (patch) in JSONL format.
 - **Step 1:** Detect if the code change requires review.
