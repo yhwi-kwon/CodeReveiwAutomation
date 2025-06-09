@@ -154,19 +154,4 @@ For further details, refer to the code and prompt files in the repository.
 
 ---
 
-## Dataset
-
-- Main data files: `cls-test.jsonl`, `msg-test.jsonl`, `msg-valid.jsonl`
-- Source: "Automating Code Review Activities by Large-Scale Pre-Training" (Microsoft, FSE 2022)  
-  Zenodo: https://zenodo.org/records/6900648  
-  arXiv: https://arxiv.org/abs/2203.09095  
-  DOI: 10.5281/zenodo.6900648
-
-- Additional dataset:  
-  "Code Review Automation: Strengths and Weaknesses of the State of the Art" (TSE 2024)  
-  arXiv: https://arxiv.org/abs/2401.05136  
-  Official repository: https://github.com/CodeReviewAutomationSota/code_review_automation_sota
-
-- Other files in the `data/` directory are auxiliary outputs generated for experimentation and evaluation.
-
 For detailed dataset documentation, see [data/README.md](data/README.md).
