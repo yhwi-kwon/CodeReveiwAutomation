@@ -2,3 +2,7 @@ openai
 tqdm
 scikit-learn
 pandas
+aiofiles
+evaluate
+bert-score
+tiktoken

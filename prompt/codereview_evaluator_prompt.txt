@@ -39,11 +39,6 @@ Code Changes Information:
 Code Changes:
 {{diff_code}}
 
-Evaluation Form (1-5 scores ONLY):
-- Information:
-- Relevance:
-- Clarity:
-- Specificity:
-- Constructive Feedback or Tone:
+# What is the quality of this code review comment? (1-5, 1 being the worst, 5 being the best)
+Final Evaluation:
 
-Final Evaluation: What is the quality of this code review comment? (1-5, 1 being the worst, 5 being the best):

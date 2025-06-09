@@ -163,5 +163,7 @@ cython_debug/
 
 *.key
 .DS_Store
-data/
 output/
+evaluator/
+
+*weight*
